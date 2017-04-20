@@ -1,0 +1,8 @@
+*.py[cdo]
+.coverage
+.env
+.tox
+coverage
+dist
+doc/_build
+src/clik.egg-info
