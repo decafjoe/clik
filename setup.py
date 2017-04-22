@@ -8,7 +8,7 @@ Package configuration for clik.
 """
 import os
 
-from setuptools import setup
+from setuptools import find_packages, setup
 
 
 name = 'clik'
@@ -61,7 +61,7 @@ setup(
     long_description=long_description,
     name=name,
     package_dir={'': 'src'},
-    py_modules=[name],
+    packages=find_packages('src'),
     test_suite='test',
     url='https://bitbucket.org/decafjoe/%s' % name,
     version=version,
