@@ -3,4 +3,5 @@
  clik
 ======
 
-Hi. Welcome to clik's documentation.
+.. toctree::
+   :maxdepth: 2

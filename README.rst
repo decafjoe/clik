@@ -3,9 +3,14 @@
  clik
 ======
 
-clik, the command line interface kit, is a library that takes away the
-bookkeeping from writing subcommand-style command line programs,
-making them a joy to write.
+clik is designed to make writing subcommand-style command line
+interfaces more pleasant. argparse_ is wonderful and powerful and
+flexible and sanely designed, but requires a fair amount of
+bookkeeping code. clik frees you from writing and maintaining that
+bookkeeping code by providing a kind of "DSL" over argparse, letting
+you focus on the logic for the problem at hand.
 
-See the documentation for more information. (TODO: Write and link said
-documentation.)
+For more information, see the official documentation. (TODO: Link to
+official documentation.)
+
+If you'd rather jump right in, have a look at the example/ directory.

@@ -1,0 +1,22 @@
+- {command} if len(children) > 3 (or 4, or N) instead of based on terminal
+  width
+
+- tox, coverage, cram
+- unit and functional (cram) tests in all environments
+  - coverage report for that whole damn thing
+- think about pre-commit and pre-push hooks (intensive testing, not every dev
+  box has all required software [eg pypy3 on osx])
+
+- copyright
+  - _compat.py
+  - magic.py
+
+- command args help (i.e. break out of "optional commands" into separate
+  "command options")
+- supplying command args to subcommand fails
+
+- example/functional test: deeply nested subcommands
+
+- clik-config
+- clik-logging
+- clik-shell

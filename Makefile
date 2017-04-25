@@ -17,6 +17,7 @@ ROOT := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 ENV = $(ROOT)/.env
 DOC = $(ROOT)/doc
 SRC = $(ROOT)/src
+CRAM_TESTS = $(SRC)/test/cram
 
 # Code
 SETUP = $(ROOT)/setup.py
@@ -29,6 +30,7 @@ UPDATED_ENV = $(ENV)/updated
 
 # Commands
 COVERAGE = $(ENV)/bin/coverage
+CRAM = $(ENV)/bin/cram
 FLAKE8 = $(ENV)/bin/flake8
 PIP = $(ENV)/bin/pip
 PYTHON = $(ENV)/bin/python
@@ -46,9 +48,11 @@ IGNORE_UPDATES_TO_PYTHON_PACKAGES = "\($(PROJECT)\)\|\(virtualenv\)"
 
 # Git hooks
 PRE_COMMIT = $(ROOT)/.git/hooks/pre-commit
-PRE_COMMIT_HOOK = make lint
+# TODO: Figure out what this should be (make lint?)
+PRE_COMMIT_HOOK = true
 PRE_PUSH = $(ROOT)/.git/hooks/pre-push
-PRE_PUSH_HOOK = make lint test-tox
+# TODO: Figure out what this should be (make test?)
+PRE_PUSH_HOOK = true
 
 
 help :
@@ -113,13 +117,13 @@ lint : env
 	$(FLAKE8) --ignore=D203 $(DOC)/conf.py $(SETUP) $(SOURCES)
 	@printf "Flake8 is happy :)\n"
 
-test-cover :
+test-cover : env
 	cd $(ROOT); \
 		$(COVERAGE) run setup.py test; \
 		$(COVERAGE) report; \
 		$(COVERAGE) html
 
-test-tox :
+test-tox : env
 	cd $(ROOT); $(TOX)
 
 test : lint test-tox test-cover
