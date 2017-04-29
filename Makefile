@@ -17,7 +17,7 @@ ROOT := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 ENV = $(ROOT)/.env
 DOC = $(ROOT)/doc
 SRC = $(ROOT)/src
-CRAM_TESTS = $(SRC)/test/cram
+TOOL = $(ROOT)/tool
 
 # Code
 SETUP = $(ROOT)/setup.py
@@ -154,10 +154,10 @@ $(DIST) : $(README) $(SOURCES) $(UPDATED_ENV)
 dist : $(DIST)
 
 release :
-	$(ROOT)/bin/pre-release
+	$(TOOL)/pre-release
 	cd $(ROOT); make lint test-tox clean dist
 	$(TWINE) upload $(DIST)
-	$(ROOT)/bin/post-release $(VERSION)
+	$(TOOL)/post-release $(VERSION)
 
 clean :
 	cd $(ROOT) && rm -rf \
