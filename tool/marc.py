@@ -20,6 +20,11 @@ import re
 import shlex
 import sys
 
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
+
 
 class Test(object):
     def __init__(self, newlines, start_line, app, argv, invocation):
@@ -40,14 +45,14 @@ class Test(object):
             exit_rvs.append(rv)
 
         orig_stdout, orig_stderr = sys.stdout, sys.stderr
-        out = sys.stdout = sys.stderr = io.StringIO()
+        out = sys.stdout = sys.stderr = StringIO()
         try:
             try:
                 self.app.main(argv=['foo'] + self.argv, exit=exit)
             except Exception as e:
-                out.write('Traceback (most recent call last):\n')
-                out.write('  ...\n')
-                out.write('%s: %s\n' % (e.__class__.__name__, e.args[0]))
+                out.write(u'Traceback (most recent call last):\n')
+                out.write(u'  ...\n')
+                out.write(u'%s: %s\n' % (e.__class__.__name__, e.args[0]))
                 exit(1)
             if len(exit_rvs) != 1:
                 fmt = 'Expected exactly 1 exit call, got %i (%s)'

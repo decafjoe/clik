@@ -154,7 +154,13 @@ class Command(object):
                 rvs.extend(child._configure_parser(
                     subparsers.add_parser(
                         child._name,
-                        aliases=child._aliases,
+                        # TODO re-enable this
+                        # This was commented out since it was causing
+                        # problems on Python 2. Instead of solving
+                        # the problem immediately, I want to see where
+                        # else Python 2 breaks. Will deal with this
+                        # eventually.
+                        # aliases=child._aliases,
                         description=description,
                         epilog=epilog,
                         help=description,

@@ -7,13 +7,17 @@ Package configuration for clik.
 :license: BSD
 """
 import os
+import sys
 
 from setuptools import find_packages, setup
 
 
 name = 'clik'
 version = '0.9.0'
+
 requires = ()
+if sys.version_info[0] == 2 and sys.version_info[1] == 6:
+    requires = ('argparse',)
 
 root = os.path.abspath(os.path.dirname(__file__))
 
