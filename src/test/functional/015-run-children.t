@@ -1,6 +1,7 @@
 $ dummy foo
 running setup code
 foo foo foo foo foo
+child exit codes: [0]
 running tear down code
 [0]
 

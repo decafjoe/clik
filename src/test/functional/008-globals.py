@@ -32,7 +32,7 @@ def foo():
         '--loud',
         action='store_true',
         default=False,
-        help='foo louder',
+        help='do it louder',
     )
 
     yield
@@ -48,7 +48,7 @@ def bar():
         '--fast',
         action='store_true',
         default=False,
-        help='bar faster',
+        help='do it faster',
     )
 
     yield

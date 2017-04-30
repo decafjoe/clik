@@ -185,7 +185,7 @@ class Command(object):
                 rv = 0
         else:
             def run_children():
-                args._clik_cmd[0]._run(rvs)
+                return args._clik_cmd[0]._run(rvs)
 
             with context(run_children=run_children):
                 try:

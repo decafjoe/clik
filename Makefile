@@ -30,8 +30,6 @@ LINT_FILES = $(DOC)/conf.py $(TOOL)/marc.py $(TOOL)/test $(SETUP) $(SOURCES)
 UPDATED_ENV = $(ENV)/updated
 
 # Commands
-COVERAGE = $(ENV)/bin/coverage
-CRAM = $(ENV)/bin/cram
 FLAKE8 = $(ENV)/bin/flake8
 PIP = $(ENV)/bin/pip
 PYTHON = $(ENV)/bin/python
@@ -148,7 +146,7 @@ dist : $(DIST)
 
 release :
 	$(TOOL)/pre-release
-	cd $(ROOT); make lint test-tox clean dist
+	cd $(ROOT); make test-all clean dist
 	$(TWINE) upload $(DIST)
 	$(TOOL)/post-release $(VERSION)
 
@@ -156,6 +154,6 @@ clean :
 	cd $(ROOT) && rm -rf \
 		$(shell find $(ROOT) -type f -name .DS_Store) \
 		$(shell find $(SRC) -type f -name *.pyc) \
-		.coverage \
+		.tox/coverage* \
 		coverage \
 		dist

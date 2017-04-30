@@ -23,7 +23,7 @@ def dummy():
 
     yield
 
-    print('invoking the code after the yield in "dummy"')
+    print('running the code after the yield in "dummy"')
 
 
 @dummy
@@ -34,12 +34,12 @@ def foo():
         '--loud',
         action='store_true',
         default=False,
-        help='foo louder',
+        help='do it louder',
     )
 
     yield
 
-    print('invoking foo')
+    print('running foo')
     msg = 'FOO' if args.loud else 'foo'
     number = 10 if args.verbose else 5
     print(' '.join([msg for _ in range(number)]))
@@ -53,12 +53,12 @@ def bar():
         '--fast',
         action='store_true',
         default=False,
-        help='bar faster',
+        help='do it faster',
     )
 
     yield
 
-    print('invoking bar')
+    print('running bar')
     join_character = '' if args.fast else ' '
     number = 10 if args.verbose else 5
     print(join_character.join(['bar' for _ in range(number)]))

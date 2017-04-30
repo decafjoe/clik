@@ -1,6 +1,8 @@
 - {command} if len(children) > 3 (or 4, or N) instead of based on terminal
   width
 
+- rename _compat to compat (why not?)
+
 - copyright
   - _compat.py
   - magic.py

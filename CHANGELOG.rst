@@ -9,7 +9,7 @@ Changelog
 * Initial public re-release.
 
 
-  Pre-0.9.0
+Pre-0.9.0
 ---------
 
 The Dark Old Days.
