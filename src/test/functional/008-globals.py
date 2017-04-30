@@ -11,8 +11,7 @@ from clik import app, args, g, parser
 
 
 @app
-def tap():
-    """Program with subcommands."""
+def dummy():
     parser.add_argument(
         '-v',
         '--verbose',
@@ -26,41 +25,33 @@ def tap():
     g.number = 10 if args.verbose else 5
 
 
-@tap
-def clap():
-    """Make the console clap."""
+@dummy
+def foo():
     parser.add_argument(
         '-l',
         '--loud',
         action='store_true',
         default=False,
-        help='clap louder',
+        help='foo louder',
     )
 
     yield
 
-    msg = 'CLAP' if args.loud is True else 'clap'
+    msg = 'FOO' if args.loud is True else 'foo'
     print(' '.join([msg for _ in range(g.number)]))
 
 
-@tap
-def snap():
+@dummy
+def bar():
     parser.add_argument(
         '-f',
         '--fast',
         action='store_true',
         default=False,
-        help='snap faster',
+        help='bar faster',
     )
 
     yield
 
     join_character = '' if args.fast is True else ' '
-    print(join_character.join(['snap' for _ in range(g.number)]))
-
-    # This will be the exit code when snap is invoked.
-    yield 42
-
-
-if __name__ == '__main__':
-    tap.main()
+    print(join_character.join(['bar' for _ in range(g.number)]))

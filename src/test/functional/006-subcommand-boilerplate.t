@@ -1,48 +1,47 @@
-Tests basic subcommand boilerplate.
+$ dummy -h
+usage: dummy [-h] {bar,foo} ...
 
-  $ alias tap=$TESTDIR/006-subcommand-boilerplate.py
+Program with subcommands.
 
+optional arguments:
+  -h, --help  show this help message and exit
 
-  $ tap -h
-  usage: tap [-h] {clap,snap} ...
-  
-  Program with subcommands.
-  
-  optional arguments:
-    -h, --help   show this help message and exit
-  
-  subcommands:
-    {clap,snap}
-      clap       Make the console clap (eventually).
-      snap       Make the console snap (eventually).
-  [1]
+subcommands:
+  {bar,foo}
+    foo       Foo all the things.
+    bar       Bar all over the place.
+[1]
 
 
-  $ tap
-  usage: tap [-h] {clap,snap} ...
-  tap: error: the following arguments are required: {clap,snap}
-  [1]
+$ dummy
+usage: dummy [-h] {bar,foo} ...
+dummy: error: the following arguments are required: {bar,foo}
+[1]
 
 
-  $ tap clap -h
-  usage: tap clap [-h]
-  
-  Make the console clap (eventually).
-  
-  optional arguments:
-    -h, --help  show this help message and exit
-  [1]
+$ dummy foo -h
+usage: dummy foo [-h]
+
+Foo all the things.
+
+optional arguments:
+  -h, --help  show this help message and exit
+[1]
 
 
-  $ tap clap
+$ dummy foo
+[0]
 
 
-  $ tap snap -h
-  usage: tap snap [-h]
-  
-  Make the console snap (eventually).
-  
-  optional arguments:
-    -h, --help  show this help message and exit
-  [1]
-  $ tap snap
+$ dummy bar -h
+usage: dummy bar [-h]
+
+Bar all over the place.
+
+optional arguments:
+  -h, --help  show this help message and exit
+[1]
+
+
+$ dummy bar
+[0]

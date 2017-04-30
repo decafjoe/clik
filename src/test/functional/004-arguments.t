@@ -1,25 +1,21 @@
-Tests exit code.
+$ dummy -h
+usage: dummy [-h] [-v]
 
-  $ alias tap=$TESTDIR/004-arguments.py
-
-
-  $ tap -h
-  usage: tap [-h] [-v]
-  
-  The first program with arguments!
-  
-  optional arguments:
-    -h, --help     show this help message and exit
-    -v, --verbose  output diagnostic information
-  [1]
+optional arguments:
+  -h, --help     show this help message and exit
+  -v, --verbose  output diagnostic information
+[1]
 
 
-  $ tap
+$ dummy
+[0]
 
 
-  $ tap -v
-  you chose verbose
+$ dummy -v
+you chose verbose
+[0]
 
 
-  $ tap --verbose
-  you chose verbose
+$ dummy --verbose
+you chose verbose
+[0]

@@ -11,33 +11,22 @@ from clik import app
 
 
 @app
-def tap():
-    """Program with subcommands."""
+def dummy():
     yield
     print('running setup code')
-    # Since commands can be nested arbitrarily deep (more info on that
-    # later), there may be more than one child. So this is a list of
-    # integers instead of a single integer.
     child_exit_codes = (yield)
     print('child exit codes:', child_exit_codes)
     print('running tear down code')
 
 
-@tap
-def clap():
-    """Make the console clap."""
+@dummy
+def foo():
     yield
-    print('clap clap clap clap clap')
+    print('foo foo foo foo foo')
 
 
-@tap
-def snap():
-    """Make the console snap."""
+@dummy
+def bar():
     yield
-    print('snap snap snap snap snap')
+    print('bar bar bar bar bar')
     yield 42
-
-
-
-if __name__ == '__main__':
-    tap.main()

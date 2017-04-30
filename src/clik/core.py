@@ -54,9 +54,14 @@ class ArgumentParser(argparse.ArgumentParser):
             if action.dest not in command_dests:
                 global_actions.append(action)
         mutex_groups = self._mutually_exclusive_groups
-        prefix = '       '
         formatter.add_usage(self.usage, global_actions, mutex_groups)
-        formatter.add_usage(self.usage, command_actions, mutex_groups, prefix)
+        if command_dests:
+            formatter.add_usage(
+                self.usage,
+                command_actions,
+                mutex_groups,
+                '       ',
+            )
         return formatter
 
     def format_usage(self):
@@ -170,7 +175,8 @@ class Command(object):
         command = args._clik_cmd.pop(0)
 
         for dest in self._command_dests:
-            delattr(args, dest)
+            if hasattr(args, dest):
+                delattr(args, dest)
 
         if len(args._clik_cmd) == 0:
             try:
@@ -190,6 +196,7 @@ class Command(object):
             if len(args._clik_cmd) > 0:
                 send = None
                 if rv is catch:
+                    rv = 0
                     exception = None
                     try:
                         run_children()
@@ -253,8 +260,8 @@ class App(Command):
 
         nonzero_rvs = [rv for rv in self._run() if rv != 0]
         if nonzero_rvs:
-            exit(nonzero_rvs[0])
-        exit(0)
+            return exit(nonzero_rvs[0])
+        return exit(0)
 
 
 def split_docstring(cls):

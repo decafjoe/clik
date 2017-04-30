@@ -11,8 +11,7 @@ from clik import app, args, parser
 
 
 @app
-def tap():
-    """Program with subcommands."""
+def dummy():
     parser.add_argument(
         '-f',
         '--fail',
@@ -27,20 +26,13 @@ def tap():
         yield 42
 
 
-@tap
-def clap():
-    """Make the console clap."""
+@dummy
+def foo():
     yield
-    print('clap clap clap clap clap')
+    print('foo foo foo foo foo')
 
 
-@tap
-def snap():
-    """Make the console snap."""
+@dummy
+def bar():
     yield
-    print('snap snap snap snap snap')
-
-
-
-if __name__ == '__main__':
-    tap.main()
+    print('bar bar bar bar bar')

@@ -1,16 +1,12 @@
-Demonstrates the "tear down" block for parent commands.
-
-  $ alias tap=$TESTDIR/010-cleanup.py
-
-
-  $ tap clap
-  running setup code
-  clap clap clap clap clap
-  running tear down code
+$ dummy foo
+running setup code
+foo foo foo foo foo
+running tear down code
+[0]
 
 
-  $ tap snap
-  running setup code
-  snap snap snap snap snap
-  running tear down code
-  [42]
+$ dummy bar
+running setup code
+bar bar bar bar bar
+running tear down code
+[42]

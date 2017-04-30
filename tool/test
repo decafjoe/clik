@@ -1,0 +1,146 @@
+#!/usr/bin/env python
+# -*- coding: utf-8
+"""
+"""
+from __future__ import print_function
+import argparse
+import fnmatch
+import os
+import re
+import subprocess
+import sys
+
+
+DEFAULT_INTERPRETER = 'py36'
+
+
+root = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+tox = os.path.join(root, '.env', 'bin', 'tox')
+functional_tests_directory = os.path.join(root, 'src', 'test', 'functional')
+functional_test_suffix = '.t'
+unit_tests_directory = os.path.join(root, 'src', 'test', 'unit')
+
+functional_test_re = re.compile(r'^(?P<n>\d{3})-?(?P<name>[\w-]+)?(\..+)?$')
+
+
+def main(argv=None, exit=sys.exit):
+    """Convenience wrapper for running tests."""
+    if argv is None:
+        argv = sys.argv
+
+    epilog = 'If called with no arguments, this will run both functional ' \
+             'and unit tests with the %s interpreter.' % DEFAULT_INTERPRETER
+    parser = argparse.ArgumentParser(description=main.__doc__, epilog=epilog)
+
+    environment = parser.add_mutually_exclusive_group()
+    environment.add_argument(
+        '-a',
+        '--all',
+        action='store_true',
+        default=False,
+        help='run test(s) in all environments',
+    )
+    environment.add_argument(
+        '-i',
+        '--interpreter',
+        default=DEFAULT_INTERPRETER,
+        help='interpreter to use for tests (default: %(default)s)',
+        metavar='pyXX',
+    )
+
+    tests = parser.add_mutually_exclusive_group()
+    tests.add_argument(
+        '-f',
+        '--functional',
+        action='store_true',
+        default=False,
+        help='run only functional tests',
+    )
+    tests.add_argument(
+        '-u',
+        '--unit',
+        action='store_true',
+        default=False,
+        help='run only unit tests',
+    )
+    tests.add_argument(
+        'test',
+        help='name of single test to run (method/class/module for unit '
+             'tests, test number or name for functional)',
+        metavar='<test-name>',
+        nargs='?',
+    )
+
+    args = parser.parse_args(argv[1:])
+
+    process = subprocess.Popen((tox, '--listenvs'), stdout=subprocess.PIPE)
+    stdout, _ = process.communicate()
+    if process.returncode:
+        msg = 'error: tox --listenvs exited non-zero, exiting'
+        print(msg, file=sys.stderr)
+    envs = [env.strip() for env in stdout.splitlines()]
+
+    error = None
+    kind = None
+    posargs = None
+    if args.functional is True:
+        kind = 'functional'
+    elif args.unit is True:
+        kind = 'unit'
+    elif args.test:
+        match = functional_test_re.search(args.test)
+        if match:
+            test_filenames = os.listdir(functional_tests_directory)
+            test_glob = '*%s' % functional_test_suffix
+            tests = {}
+            for filename in fnmatch.filter(test_filenames, test_glob):
+                n, name = filename.split('-', 1)
+                name = name[:-len(functional_test_suffix)]
+                tests[n] = name
+            n, name = match.group('n'), match.group('name')
+            if n in tests:
+                expected_name = tests[n]
+                if name and name != expected_name:
+                    fmt = 'name given ("%s") does not match actual name ("%s")'
+                    error = fmt % (name, expected_name)
+                else:
+                    fmt = '/%s-%s%s'
+                    posargs = fmt % (n, expected_name, functional_test_suffix)
+                    kind = 'functional'
+            else:
+                error = 'no functional test numbered %s' % n
+        else:
+            test_filenames = os.listdir(unit_tests_directory)
+            tests = fnmatch.filter(test_filenames, '*test*.py')
+            if '%s.py' % args.test in tests:
+                kind = 'unit'
+                posargs = '/%s.py' % args.test
+            else:
+                error = 'no unit test file named %s' % args.test
+    if error:
+        print('error:', error, file=sys.stderr)
+        exit(1)
+
+    envs_arg = None
+    if kind or not args.all:
+        glob = '*-' if args.all else '%s-' % args.interpreter
+        glob += kind if kind else '*'
+        selected_envs = fnmatch.filter(envs, glob)
+        if len(selected_envs) < 1:
+            pass # TODO: unknown interpreter, error out
+        envs_arg = '-e %s' % ','.join(selected_envs)
+    if envs_arg:
+        envs_arg += ',cover'
+
+    command = (tox,)
+    if envs_arg:
+        command += (envs_arg,)
+    if posargs:
+        command += ('--', posargs)
+
+    print('running:', ' '.join(command))
+    exit(subprocess.call(command))
+
+
+if __name__ == '__main__':
+    main()

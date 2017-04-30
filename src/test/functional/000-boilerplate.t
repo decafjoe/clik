@@ -1,14 +1,10 @@
-The most simple possible program.
+$ dummy -h
+usage: dummy [-h]
 
-  $ alias tap=$TESTDIR/000-boilerplate.py
-
-
-  $ tap -h
-  usage: tap [-h]
-  
-  optional arguments:
-    -h, --help  show this help message and exit
-  [1]
+optional arguments:
+  -h, --help  show this help message and exit
+[1]
 
 
-  $ tap
+$ dummy
+[0]

@@ -11,11 +11,6 @@ from clik import app
 
 
 @app
-def tap():
-    """A program that always exits with an exit code of 42."""
+def dummy():
     yield
     yield 42
-
-
-if __name__ == '__main__':
-    tap.main()

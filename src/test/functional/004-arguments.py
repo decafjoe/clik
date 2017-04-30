@@ -11,8 +11,7 @@ from clik import app, args, parser
 
 
 @app
-def tap():
-    """The first program with arguments!"""
+def dummy():
     parser.add_argument(
         '-v',
         '--verbose',
@@ -25,7 +24,3 @@ def tap():
 
     if args.verbose:
         print('you chose verbose')
-
-
-if __name__ == '__main__':
-    tap.main()

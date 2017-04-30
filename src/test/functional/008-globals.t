@@ -1,21 +1,18 @@
-Demonstrates the g object.
-
-  $ alias tap=$TESTDIR/008-globals.py
-
-
-  $ tap clap
-  clap clap clap clap clap
+$ dummy foo
+foo foo foo foo foo
+[0]
 
 
-  $ tap --verbose clap
-  clap clap clap clap clap clap clap clap clap clap
+$ dummy --verbose foo
+foo foo foo foo foo foo foo foo foo foo
+[0]
 
 
-  $ tap snap
-  snap snap snap snap snap
-  [42]
+$ dummy bar
+bar bar bar bar bar
+[0]
 
 
-  $ tap --verbose snap
-  snap snap snap snap snap snap snap snap snap snap
-  [42]
+$ dummy --verbose bar
+bar bar bar bar bar bar bar bar bar bar
+[0]

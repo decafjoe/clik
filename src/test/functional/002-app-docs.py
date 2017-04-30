@@ -11,7 +11,7 @@ from clik import app
 
 
 @app
-def tap():
+def dummy():
     """
     A simple test application to demonstrate how docstrings are used.
 
@@ -21,7 +21,3 @@ def tap():
     used as the ``epilog``.
     """
     yield
-
-
-if __name__ == '__main__':
-    tap.main()

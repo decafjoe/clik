@@ -1,17 +1,14 @@
-Access the exception via the yield.
-
-  $ alias tap=$TESTDIR/014-yield-catch.py
-
-
-  $ tap clap
-  running setup code
-  clap clap clap clap clap
-  exception: None
-  running tear down code
+$ dummy foo
+running setup code
+foo foo foo foo foo
+exception: None
+running tear down code
+[0]
 
 
-  $ tap snap
-  running setup code
-  snap snap snap snap snap
-  exception: whoops
-  running tear down code
+$ dummy bar
+running setup code
+bar bar bar bar bar
+exception: whoops
+running tear down code
+[0]

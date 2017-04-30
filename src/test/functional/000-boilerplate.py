@@ -11,9 +11,5 @@ from clik import app
 
 
 @app
-def tap():
+def dummy():
     yield
-
-
-if __name__ == '__main__':
-    tap.main()

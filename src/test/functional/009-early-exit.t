@@ -1,27 +1,21 @@
-Demonstrates exiting early, before child commands get invoked.
+$ dummy -h
+usage: dummy [-h] [-f] {bar,foo} ...
 
-  $ alias tap=$TESTDIR/009-early-exit.py
+optional arguments:
+  -h, --help  show this help message and exit
+  -f, --fail  fail without invoking the child command
 
-
-  $ tap -h
-  usage: tap [-h] [-f] {clap,snap} ...
-  
-  Program with subcommands.
-  
-  optional arguments:
-    -h, --help   show this help message and exit
-    -f, --fail   fail without invoking the child command
-  
-  subcommands:
-    {clap,snap}
-      clap       Make the console clap.
-      snap       Make the console snap.
-  [1]
+subcommands:
+  {bar,foo}
+    foo
+    bar
+[1]
 
 
-  $ tap clap
-  clap clap clap clap clap
+$ dummy foo
+foo foo foo foo foo
+[0]
 
 
-  $ tap -f clap
-  [42]
+$ dummy -f foo
+[42]

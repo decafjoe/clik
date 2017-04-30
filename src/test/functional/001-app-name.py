@@ -10,10 +10,6 @@ Tests that the app name can specified.
 from clik import app
 
 
-@app(name='tappity')
-def tap():
+@app(name='dumbdumb')
+def dummy():
     yield
-
-
-if __name__ == '__main__':
-    tap.main()

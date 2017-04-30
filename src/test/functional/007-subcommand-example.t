@@ -1,165 +1,146 @@
-Basic example to demonstrate subcommands.
+$ dummy -h
+configuring top-level parser
+configuring foo parser
+configuring bar parser
+usage: dummy [-h] [-v] {bar,foo} ...
 
-  $ alias tap=$TESTDIR/007-subcommand-example.py
+optional arguments:
+  -h, --help     show this help message and exit
+  -v, --verbose  output more stuff
 
-
-  $ tap -h
-  configuring top-level parser
-  configuring clap parser
-  configuring snap parser
-  usage: tap [-h] [-v] {clap,snap} ...
-  
-  Program with subcommands.
-  
-  optional arguments:
-    -h, --help     show this help message and exit
-    -v, --verbose  output more stuff
-  
-  subcommands:
-    {clap,snap}
-      clap         Make the console clap.
-      snap         Make the console snap.
-  
-  Note that in real programs, you probably won't be printing stuff to the
-  console in the "configure parser" block of code. It's in this example only to
-  show control flow.
-  [1]
+subcommands:
+  {bar,foo}
+    foo
+    bar
+[1]
 
 
-  $ tap clap -h
-  configuring top-level parser
-  configuring clap parser
-  configuring snap parser
-  usage: tap clap [-h] [-l]
-  
-  Make the console clap.
-  
-  optional arguments:
-    -h, --help  show this help message and exit
-    -l, --loud  clap louder
-  [1]
+$ dummy foo -h
+configuring top-level parser
+configuring foo parser
+configuring bar parser
+usage: dummy foo [-h] [-l]
+
+optional arguments:
+  -h, --help  show this help message and exit
+  -l, --loud  foo louder
+[1]
 
 
-  $ tap snap -h
-  configuring top-level parser
-  configuring clap parser
-  configuring snap parser
-  usage: tap snap [-h] [-f]
-  
-  Make the console snap.
-  
-  optional arguments:
-    -h, --help  show this help message and exit
-    -f, --fast  snap faster
-  [1]
+$ dummy bar -h
+configuring top-level parser
+configuring foo parser
+configuring bar parser
+usage: dummy bar [-h] [-f]
+
+optional arguments:
+  -h, --help  show this help message and exit
+  -f, --fast  bar faster
+[1]
 
 
-For some reason cram seems to always put stderr before stdout. In reality,
-the lines starting with "configuring" are output first, and the usage/error
-messages after that:
-
-  $ tap
-  usage: tap [-h] [-v] {clap,snap} ...
-  tap: error: the following arguments are required: {clap,snap}
-  configuring top-level parser
-  configuring clap parser
-  configuring snap parser
-  [1]
+$ dummy
+configuring top-level parser
+configuring foo parser
+configuring bar parser
+usage: dummy [-h] [-v] {bar,foo} ...
+dummy: error: the following arguments are required: {bar,foo}
+[1]
 
 
-  $ tap clap
-  configuring top-level parser
-  configuring clap parser
-  configuring snap parser
-  invoking the code after the yield in "tap"
-  invoking clap
-  clap clap clap clap clap
+$ dummy foo
+configuring top-level parser
+configuring foo parser
+configuring bar parser
+invoking the code after the yield in "dummy"
+invoking foo
+foo foo foo foo foo
+[0]
 
 
-  $ tap --verbose clap
-  configuring top-level parser
-  configuring clap parser
-  configuring snap parser
-  invoking the code after the yield in "tap"
-  invoking clap
-  clap clap clap clap clap clap clap clap clap clap
+$ dummy --verbose foo
+configuring top-level parser
+configuring foo parser
+configuring bar parser
+invoking the code after the yield in "dummy"
+invoking foo
+foo foo foo foo foo foo foo foo foo foo
+[0]
 
 
-  $ tap clap --loud
-  configuring top-level parser
-  configuring clap parser
-  configuring snap parser
-  invoking the code after the yield in "tap"
-  invoking clap
-  CLAP CLAP CLAP CLAP CLAP
+$ dummy foo --loud
+configuring top-level parser
+configuring foo parser
+configuring bar parser
+invoking the code after the yield in "dummy"
+invoking foo
+FOO FOO FOO FOO FOO
+[0]
 
 
-  $ tap --verbose clap --loud
-  configuring top-level parser
-  configuring clap parser
-  configuring snap parser
-  invoking the code after the yield in "tap"
-  invoking clap
-  CLAP CLAP CLAP CLAP CLAP CLAP CLAP CLAP CLAP CLAP
+$ dummy --verbose foo --loud
+configuring top-level parser
+configuring foo parser
+configuring bar parser
+invoking the code after the yield in "dummy"
+invoking foo
+FOO FOO FOO FOO FOO FOO FOO FOO FOO FOO
+[0]
 
 
-See note above about stdout/stderr being swapped:
-
-  $ tap clap --verbose
-  usage: tap [-h] [-v] {clap,snap} ...
-  tap: error: unrecognized arguments: --verbose
-  configuring top-level parser
-  configuring clap parser
-  configuring snap parser
-  [1]
+$ dummy foo --verbose
+configuring top-level parser
+configuring foo parser
+configuring bar parser
+usage: dummy [-h] [-v] {bar,foo} ...
+dummy: error: unrecognized arguments: --verbose
+[1]
 
 
-  $ tap snap
-  configuring top-level parser
-  configuring clap parser
-  configuring snap parser
-  invoking the code after the yield in "tap"
-  invoking snap
-  snap snap snap snap snap
-  [42]
+$ dummy bar
+configuring top-level parser
+configuring foo parser
+configuring bar parser
+invoking the code after the yield in "dummy"
+invoking bar
+bar bar bar bar bar
+[42]
 
 
-  $ tap --verbose snap
-  configuring top-level parser
-  configuring clap parser
-  configuring snap parser
-  invoking the code after the yield in "tap"
-  invoking snap
-  snap snap snap snap snap snap snap snap snap snap
-  [42]
+$ dummy --verbose bar
+configuring top-level parser
+configuring foo parser
+configuring bar parser
+invoking the code after the yield in "dummy"
+invoking bar
+bar bar bar bar bar bar bar bar bar bar
+[42]
 
 
-  $ tap snap --fast
-  configuring top-level parser
-  configuring clap parser
-  configuring snap parser
-  invoking the code after the yield in "tap"
-  invoking snap
-  snapsnapsnapsnapsnap
-  [42]
+$ dummy bar --fast
+configuring top-level parser
+configuring foo parser
+configuring bar parser
+invoking the code after the yield in "dummy"
+invoking bar
+barbarbarbarbar
+[42]
 
 
-  $ tap --verbose snap --fast
-  configuring top-level parser
-  configuring clap parser
-  configuring snap parser
-  invoking the code after the yield in "tap"
-  invoking snap
-  snapsnapsnapsnapsnapsnapsnapsnapsnapsnap
-  [42]
+$ dummy --verbose bar --fast
+configuring top-level parser
+configuring foo parser
+configuring bar parser
+invoking the code after the yield in "dummy"
+invoking bar
+barbarbarbarbarbarbarbarbarbar
+[42]
 
 
-See note above about stdout/stderr being swapped:
-
-  $ tap snap --verbose
-  usage: tap [-h] [-v] {clap,snap} ...
-  tap: error: unrecognized arguments: --verbose
-  configuring top-level parser
-  configuring clap parser
-  configuring snap parser
-  [1]
+$ dummy bar --verbose
+configuring top-level parser
+configuring foo parser
+configuring bar parser
+usage: dummy [-h] [-v] {bar,foo} ...
+dummy: error: unrecognized arguments: --verbose
+[1]

@@ -11,12 +11,7 @@ from clik import app
 
 
 @app
-def tap():
-    """Program showing early exit."""
+def dummy():
     print('this will be printed...')
     yield 42
     print('...but this will not')
-
-
-if __name__ == '__main__':
-    tap.main()

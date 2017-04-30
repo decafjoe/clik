@@ -26,6 +26,7 @@ ENV_SOURCES = $(SETUP) $(REQUIREMENTS)
 CHANGELOG = $(ROOT)/CHANGELOG.rst
 README = $(ROOT)/README.rst
 SOURCES := $(shell find $(SRC) -name "*.py")
+LINT_FILES = $(DOC)/conf.py $(TOOL)/marc.py $(TOOL)/test $(SETUP) $(SOURCES)
 UPDATED_ENV = $(ENV)/updated
 
 # Commands
@@ -65,9 +66,8 @@ help :
 	@printf "  pdf           Generate PDF documentation\n"
 	@printf "  pristine      Delete development environment\n"
 	@printf "  release       Cut a release of the software\n"
-	@printf "  test          Run all tests\n"
-	@printf "  test-cover    Run tests, report test coverage\n"
-	@printf "  test-tox      Run tests, all supported Python versions\n\n"
+	@printf "  test          Run tests against $(PYTHON_VERSION)\n"
+	@printf "  test-all      Run tests in all supported versions\n"
 
 
 # =============================================================================
@@ -112,19 +112,14 @@ $(PRE_PUSH) : $(ROOT)/Makefile
 	chmod +x $(PRE_PUSH)
 
 lint : env
-	$(FLAKE8) --ignore=D203 $(DOC)/conf.py $(SETUP) $(SOURCES)
+	$(FLAKE8) --ignore=D203 $(LINT_FILES)
 	@printf "Flake8 is happy :)\n"
 
-test-cover : env
-	cd $(ROOT); \
-		$(COVERAGE) run setup.py test; \
-		$(COVERAGE) report; \
-		$(COVERAGE) html
+test : lint
+	$(TOOL)/test
 
-test-tox : env
-	cd $(ROOT); $(TOX)
-
-test : lint test-tox test-cover
+test-all : lint
+	$(TOOL)/test -a
 
 
 # =============================================================================

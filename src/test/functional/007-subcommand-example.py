@@ -11,14 +11,7 @@ from clik import app, args, parser
 
 
 @app
-def tap():
-    """
-    Program with subcommands.
-
-    Note that in real programs, you probably won't be printing stuff to the
-    console in the "configure parser" block of code. It's in this example
-    only to show control flow.
-    """
+def dummy():
     print('configuring top-level parser')
     parser.add_argument(
         '-v',
@@ -30,51 +23,44 @@ def tap():
 
     yield
 
-    print('invoking the code after the yield in "tap"')
+    print('invoking the code after the yield in "dummy"')
 
 
-@tap
-def clap():
-    """Make the console clap."""
-    print('configuring clap parser')
+@dummy
+def foo():
+    print('configuring foo parser')
     parser.add_argument(
         '-l',
         '--loud',
         action='store_true',
         default=False,
-        help='clap louder',
+        help='foo louder',
     )
 
     yield
 
-    print('invoking clap')
-    msg = 'CLAP' if args.loud else 'clap'
+    print('invoking foo')
+    msg = 'FOO' if args.loud else 'foo'
     number = 10 if args.verbose else 5
     print(' '.join([msg for _ in range(number)]))
 
 
-@tap
-def snap():
-    """Make the console snap."""
-    print('configuring snap parser')
+@dummy
+def bar():
+    print('configuring bar parser')
     parser.add_argument(
         '-f',
         '--fast',
         action='store_true',
         default=False,
-        help='snap faster',
+        help='bar faster',
     )
 
     yield
 
-    print('invoking snap')
+    print('invoking bar')
     join_character = '' if args.fast else ' '
     number = 10 if args.verbose else 5
-    print(join_character.join(['snap' for _ in range(number)]))
+    print(join_character.join(['bar' for _ in range(number)]))
 
-    # This will be the exit code when snap is invoked.
     yield 42
-
-
-if __name__ == '__main__':
-    tap.main()

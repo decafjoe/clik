@@ -11,22 +11,18 @@ from clik import app
 
 
 @app
-def tap():
+def dummy():
     """Program with subcommands."""
     yield
 
 
-@tap
-def clap():
-    """Make the console clap (eventually)."""
+@dummy
+def foo():
+    """Foo all the things."""
     yield
 
 
-@tap
-def snap():
-    """Make the console snap (eventually)."""
+@dummy
+def bar():
+    """Bar all over the place."""
     yield
-
-
-if __name__ == '__main__':
-    tap.main()
