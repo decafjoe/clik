@@ -1,12 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-"""
-Basic example to demonstrate subcommands.
-
-:author: Joe Joyce <joe@decafjoe.com>
-:copyright: Copyright (c) Joe Joyce, 2009-2017.
-:license: BSD
-"""
 from clik import app, args, parser
 
 

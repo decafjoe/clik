@@ -1,5 +1,5 @@
 $ dummy -h
-usage: dumbdumb [-h]
+usage: dumdum [-h]
 
 optional arguments:
   -h, --help  show this help message and exit
