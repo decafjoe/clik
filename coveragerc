@@ -2,6 +2,7 @@
 source =
   src/clik
   .tox/*/lib/*/site-packages/clik
+  .tox/pypy*/site-packages/clik
 
 [report]
 show_missing = 1
