@@ -2,11 +2,6 @@
   - "reference" (python 3) implementation should be clean and compat-cruft-free
   - API needs to be the same to the calling code (i.e. Command)
 
-- {command} if len(children) > 3 (or 4, or N) instead of based on terminal
-  width
-
-- get rid of single if/else lines -- bad for code coverage
-
 - copyright
   - compat.py
   - magic.py
@@ -14,8 +9,6 @@
 - no positional args for bare commands
 
 - exception hierarchy
-
-- example/functional test: commands
 
 - clik-config
 - clik-logging

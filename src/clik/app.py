@@ -16,7 +16,9 @@ from clik.magic import context
 def app(fn=None, name=None):
     def decorate(fn):
         return App(fn, name)
-    return decorate if fn is None else decorate(fn)
+    if fn is None:
+        return decorate
+    return decorate(fn)
 
 
 class AttributeDict(dict):
