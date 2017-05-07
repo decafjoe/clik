@@ -11,9 +11,7 @@
   - compat.py
   - magic.py
 
-- command args help (i.e. break out of "optional commands" into separate
-  "command options")
-- supplying command args to subcommand fails
+- no positional args for bare commands
 
 - exception hierarchy
 

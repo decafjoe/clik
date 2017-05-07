@@ -7,6 +7,7 @@ All the hackery that makes clik clik.
 :license: BSD
 """
 import re
+import sys
 
 from clik.magic import args, context
 
@@ -28,10 +29,10 @@ class BareAlreadyRegisteredError(Exception):
 class Command(object):
     def __init__(self, fn, name=None, alias=None, aliases=None):
         self._bare = None
-        self._bare_dests = []
         self._children = []
         self._fn = fn
         self._generator = None
+        self._parent = None
         self._parser = None
 
         if name is None:
@@ -60,7 +61,7 @@ class Command(object):
     def bare(self, fn):
         if self._bare is not None:
             raise BareAlreadyRegisteredError(self)
-        self._bare = fn
+        self._bare = Command(fn)
 
     def __call__(self, fn=None, name=None, alias=None, aliases=None):
         def decorate(fn):
@@ -75,18 +76,15 @@ class Command(object):
         parts = list(filter(None, re.split(r'\n\s*\n', x.__doc__ or '', 1)))
         return parts + [None] * (2 - len(parts))
 
-    def _configure_parser(self, parser, stack=None, ecs=None, bare_dests=None):
+    def _configure_parser(self, parser, parent=None, stack=None, ecs=None):
         self._parser = parser
 
         if stack is None:
             stack = []
         if ecs is None:
             ecs = []
-
-        if bare_dests is None:
-            self._bare_dests = ()
-        else:
-            self._bare_dests = bare_dests
+        if parent is not None:
+            self._parent = parent
 
         self._generator = self._fn()
         with context(parser=parser):
@@ -114,16 +112,15 @@ class Command(object):
                 title='subcommands',
             )
 
-            bare_dests = None
             if self._bare:
-                parser._clik_mark_bare_arguments_start()
+                parser._clik_start_bare_arguments()
                 self._bare._generator = self._bare._fn()
                 with context(parser=parser):
-                    ec = next(self._command._generator)
+                    ec = next(self._bare._generator)
                     if ec is None:
                         ec = 0
                     ecs.append(ec)
-                bare_dests = tuple(parser._clik_bare_dests)
+                parser._clik_end_bare_arguments()
                 parser.set_defaults(**{STACK: stack + [self._bare]})
             else:
                 subparsers.required = True
@@ -138,30 +135,46 @@ class Command(object):
                         epilog=epilog,
                         help=description,
                     ),
+                    parent=self,
                     stack=stack,
                     ecs=ecs,
-                    bare_dests=bare_dests,
                 ))
         else:
             parser.set_defaults(**{STACK: stack})
 
         return ecs
 
+    def _check_bare_arguments(self):
+        if self._parent is not None:
+            parser = self._parent._parser
+            for dest in parser._clik_bare_dests:
+                if hasattr(args, dest):
+                    if getattr(args, dest) != parser.get_default(dest):
+                        parser.print_usage(sys.stderr)
+                        for action in parser._actions:
+                            if action.dest == dest:
+                                break
+                        options = '/'.join(action.option_strings)
+                        err = 'unrecognized arguments when calling subcommand'
+                        fmt = '%s: error: %s: %s'
+                        msg = fmt % (parser.prog, err, options)
+                        print(msg, file=sys.stderr)
+                        return 1
+                    delattr(args, dest)
+        return 0
+
     def _run(self, ecs=None):
+        stack = getattr(args, STACK)
+
         if ecs is None:
             ecs = []
-
-        stack = getattr(args, STACK)
-        command = stack.pop(0)
-
-        for dest in self._bare_dests:
-            if hasattr(args, dest):
-                if getattr(args, dest) != self._parser.get_default(dest):
-                    # TODO error out: unrecognized argument: ...
-                    #      (i.e. imitate argparse as best as possible)
-                    ecs.append(1)
+            for command in stack:
+                ec = command._check_bare_arguments()
+                if ec:
+                    ecs.insert(0, ec)
                     return ecs
-                delattr(args, dest)
+
+        command = stack.pop(0)
 
         if len(stack) == 0:
             try:

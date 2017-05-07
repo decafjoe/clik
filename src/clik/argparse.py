@@ -26,16 +26,22 @@ class ArgumentParserExit(Exception):
 
 class ArgumentParser(argparse.ArgumentParser):
     def __init__(self, *args, **kwargs):
+        self._clik_bare_dests_recording = False
+        self._clik_bare_dests = []
         kwargs.setdefault('formatter_class', HelpFormatter)
         super(ArgumentParser, self).__init__(*args, **kwargs)
 
-    def _clik_mark_command_arguments(self):
-        self._clik_command_dests = []
+    def _clik_start_bare_arguments(self):
+        self._clik_bare_dests_recording = True
+
+    def _clik_end_bare_arguments(self):
+        self._clik_bare_dests_recording = False
 
     def add_argument(self, *args, **kwargs):
+        # TODO: Disallow positional arguments if we are recording bare dests.
         argument = super(ArgumentParser, self).add_argument(*args, **kwargs)
-        if hasattr(self, '_clik_command_dests'):
-            self._clik_command_dests.append(argument.dest)
+        if self._clik_bare_dests_recording:
+            self._clik_bare_dests.append(argument.dest)
         return argument
 
     def exit(self, status=0, message=None):
@@ -44,19 +50,19 @@ class ArgumentParser(argparse.ArgumentParser):
         raise ArgumentParserExit(status)
 
     def _format_usage(self, formatter):
-        command_dests = getattr(self, '_clik_command_dests', ())
-        global_actions, command_actions = [], []
+        bare_dests = getattr(self, '_clik_bare_dests', ())
+        global_actions, bare_actions = [], []
         for action in self._actions:
             if not isinstance(action, argparse._SubParsersAction):
-                command_actions.append(action)
-            if action.dest not in command_dests:
+                bare_actions.append(action)
+            if action.dest not in bare_dests:
                 global_actions.append(action)
         mutex_groups = self._mutually_exclusive_groups
         formatter.add_usage(self.usage, global_actions, mutex_groups)
-        if command_dests:
+        if bare_dests:
             formatter.add_usage(
                 self.usage,
-                command_actions,
+                bare_actions,
                 mutex_groups,
                 '       ',
             )
