@@ -17,7 +17,6 @@
 
 - example/functional test: commands
 - example/functional test: aliases
-- example/functional test: deeply nested subcommands
 
 - clik-config
 - clik-logging
