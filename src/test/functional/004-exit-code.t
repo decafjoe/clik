@@ -1,4 +1,5 @@
 $ dummy -h
+configuring parser
 usage: dummy [-h]
 
 optional arguments:
@@ -7,4 +8,6 @@ optional arguments:
 
 
 $ dummy
+configuring parser
+running code
 [42]
