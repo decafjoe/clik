@@ -1,10 +1,14 @@
+- Py2/Py3 compatibility
+  - "reference" (python 3) implementation should be clean and compat-cruft-free
+  - API needs to be the same to the calling code (i.e. Command)
+
 - {command} if len(children) > 3 (or 4, or N) instead of based on terminal
   width
 
-- rename _compat to compat (why not?)
+- get rid of single if/else lines -- bad for code coverage
 
 - copyright
-  - _compat.py
+  - compat.py
   - magic.py
 
 - command args help (i.e. break out of "optional commands" into separate
