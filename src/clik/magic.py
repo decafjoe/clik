@@ -9,7 +9,7 @@
 import contextlib
 import copy
 
-from clik._compat import implements_bool, iteritems, PY2
+from clik.compat import implements_bool, iteritems, PY2
 
 
 class MagicNameConflictError(Exception):
