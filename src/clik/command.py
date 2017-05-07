@@ -6,27 +6,11 @@ All the hackery that makes clik clik.
 :copyright: Copyright (c) Joe Joyce, 2009-2017.
 :license: BSD
 """
-from __future__ import print_function
-import argparse
 import re
-import sys
 
-from clik.argparse import ArgumentParser, ArgumentParserExit
-from clik.magic import args, context, current_app, g, parser, run_children
-
+from clik.magic import args, context
 
 catch = object()
-
-
-class AttributeDict(dict):
-    def __getattr__(self, name):
-        return self[name]
-
-    def __setattr__(self, name, value):
-        self[name] = value
-
-    def __delattr__(self, name):
-        del self[name]
 
 
 class Command(object):
@@ -47,6 +31,10 @@ class Command(object):
             self._children.append(command)
             return command
         return decorate if fn is None else decorate(fn)
+
+    def _split_docstring(_, x=None):
+        parts = list(filter(None, re.split(r'\n\s*\n', x.__doc__ or '', 1)))
+        return parts + [None] * (2 - len(parts))
 
     def _configure_parser(self, parser, cmd=None, rvs=None, cmd_dests=None):
         if cmd is None:
@@ -87,7 +75,7 @@ class Command(object):
                 subparsers.required = True
 
             for child in self._children:
-                description, epilog = split_docstring(child._fn)
+                description, epilog = self._split_docstring(child._fn)
                 rvs.extend(child._configure_parser(
                     subparsers.add_parser(
                         child._name,
@@ -162,56 +150,3 @@ class Command(object):
         command = Command(fn)
         self._command = command
         return command
-
-
-class App(Command):
-    def __init__(self, fn, name=None):
-        name = fn.__name__ if name is None else name
-        super(App, self).__init__(fn, name=name)
-
-    def main(self, argv=None, exit=sys.exit):
-        if argv is None:
-            argv = sys.argv
-
-        context.push('current_app', self)
-        context.push('g', AttributeDict())
-        context.push('args', None)  # Could do a argparse.Namespace here...
-
-        description, epilog = split_docstring(self._fn)
-        parser = ArgumentParser(
-            prog=self._name,
-            description=description,
-            epilog=epilog,
-        )
-        nonzero_rvs = [rv for rv in self._configure_parser(parser) if rv != 0]
-        if nonzero_rvs:
-            return exit(nonzero_rvs[0])
-
-        try:
-            args = parser.parse_args(argv[1:])  # ...and pass it here...
-        except ArgumentParserExit:
-            return exit(1)
-
-        context.pop('args')  # ...and kill this pop/push...
-        context.push('args', args)
-
-        # ...if we wanted to allow modification of the global `args`
-        # during parser configuration. I like that commands can't
-        # mutate args until we know they're being called. But I could
-        # probably be convinced to change that.
-
-        nonzero_rvs = [rv for rv in self._run() if rv != 0]
-        if nonzero_rvs:
-            return exit(nonzero_rvs[0])
-        return exit(0)
-
-
-def split_docstring(cls):
-    parts = list(filter(None, re.split(r'\n\s*\n', cls.__doc__ or '', 1)))
-    return parts + [None] * (2 - len(parts))
-
-
-def app(fn=None, name=None):
-    def decorate(fn):
-        return App(fn, name)
-    return decorate if fn is None else decorate(fn)
