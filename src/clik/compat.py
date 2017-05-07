@@ -10,6 +10,7 @@ import sys
 
 
 PY2 = sys.version_info[0] == 2
+PY26 = sys.version_info[0:2] == (2, 6)
 PY33 = sys.version_info[0:2] == (3, 3)
 
 

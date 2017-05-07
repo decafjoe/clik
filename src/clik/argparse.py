@@ -10,7 +10,7 @@ from __future__ import absolute_import, print_function
 import argparse
 import sys
 
-from clik.compat import PY2, PY33
+from clik.compat import PY2, PY26, PY33
 
 
 class HelpFormatter(argparse.HelpFormatter):
@@ -87,12 +87,12 @@ class ArgumentParser(argparse.ArgumentParser):
         return formatter.format_help()
 
 
-if PY33:
-    # In Python 3.3, subparser defaults are not set properly. This was
-    # fixed in Python 3.4. The following code is a reformatted version
-    # of the 3.4 implementation. The __call__ function is
-    # monkeypatched into the argparse._SubParsersAction class, which
-    # makes me feel dirty but works. Suggestions welcome.
+if PY33 or PY26:
+    # In Python 3.3 and 2.6, subparser defaults are not set properly.
+    # This was fixed in Python 3.4/2.7. The following code is a
+    # reformatted version of the 3.4 implementation. The __call__
+    # function is monkeypatched into the argparse._SubParsersAction
+    # class, which makes me feel dirty but works. Suggestions welcome.
 
     def __call__(self, parser, namespace, values, option_string=None):
         parser_name = values[0]
@@ -124,6 +124,22 @@ if PY33:
 
 
 if PY2:
+    original_error = ArgumentParser.error
+
+    def error(self, message=None):
+        if message == 'too few arguments':
+            for action in self._actions:
+                if isinstance(action, argparse._SubParsersAction):
+                    break
+            if action.required:
+                self.print_usage(sys.stderr)
+                fmt = '%s: error: the following arguments are required: %s\n'
+                return self.exit(2, fmt % (self.prog, action.metavar))
+        else:
+            return original_error(self, message)
+
+    ArgumentParser.error = error
+
     # Alias code based on https://gist.github.com/sampsyo/471779.
 
     class _AliasedSubParsersPseudoAction(argparse.Action):
