@@ -16,7 +16,6 @@
 - supplying command args to subcommand fails
 
 - example/functional test: commands
-- example/functional test: aliases
 
 - clik-config
 - clik-logging
