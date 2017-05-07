@@ -32,7 +32,6 @@ class AttributeDict(dict):
 
 class App(Command):
     def __init__(self, fn, name=None):
-        name = fn.__name__ if name is None else name
         super(App, self).__init__(fn, name=name)
 
     def main(self, argv=None, exit=sys.exit):
@@ -45,13 +44,13 @@ class App(Command):
 
         description, epilog = self._split_docstring(self._fn)
         parser = ArgumentParser(
-            prog=self._name,
+            prog=self.name,
             description=description,
             epilog=epilog,
         )
-        nonzero_rvs = [rv for rv in self._configure_parser(parser) if rv != 0]
-        if nonzero_rvs:
-            return exit(nonzero_rvs[0])
+        nonzero_ecs = [ec for ec in self._configure_parser(parser) if ec != 0]
+        if nonzero_ecs:
+            return exit(nonzero_ecs[0])
 
         try:
             args = parser.parse_args(argv[1:])  # ...and pass it here...
@@ -66,7 +65,7 @@ class App(Command):
         # mutate args until we know they're being called. But I could
         # probably be convinced to change that.
 
-        nonzero_rvs = [rv for rv in self._run() if rv != 0]
-        if nonzero_rvs:
-            return exit(nonzero_rvs[0])
+        nonzero_ecs = [ec for ec in self._run() if ec != 0]
+        if nonzero_ecs:
+            return exit(nonzero_ecs[0])
         return exit(0)

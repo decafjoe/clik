@@ -30,6 +30,7 @@ optional arguments:
 
 
 $ dummy foo
+foo
 [0]
 
 
@@ -44,4 +45,5 @@ optional arguments:
 
 
 $ dummy bar
+bar
 [0]

@@ -10,52 +10,103 @@ import re
 
 from clik.magic import args, context
 
+
 catch = object()
+STACK = '_clik_stack'
+SHOW_SUBCOMMANDS = 3
+
+
+class BareAlreadyRegisteredError(Exception):
+    """Raised when a bare command function has already been registered."""
+
+    def __init__(self, command):
+        msg = 'Bare command already registered for command "%s"' % command.name
+        super(BareAlreadyRegisteredError, self).__init__(msg)
+        self.command = command
 
 
 class Command(object):
     def __init__(self, fn, name=None, alias=None, aliases=None):
-        self._fn = fn
-        self._name = fn.__name__ if name is None else name
-        self._aliases = [] if aliases is None else list(aliases)
-        if alias:
-            self._aliases.insert(0, alias)
+        self._bare = None
+        self._bare_dests = []
         self._children = []
-        self._command = None
+        self._fn = fn
         self._generator = None
-        self._command_dests = []
+        self._parser = None
+
+        if name is None:
+            self._name = fn.__name__
+        else:
+            self._name = name
+
+        if aliases is None:
+            aliases = []
+        else:
+            aliases = list(aliases)
+
+        if alias is not None:
+            aliases.insert(0, alias)
+
+        self._aliases = tuple(aliases)
+
+    @property
+    def aliases(self):
+        return self._aliases
+
+    @property
+    def name(self):
+        return self._name
+
+    def bare(self, fn):
+        if self._bare is not None:
+            raise BareAlreadyRegisteredError(self)
+        self._bare = fn
 
     def __call__(self, fn=None, name=None, alias=None, aliases=None):
         def decorate(fn):
             command = Command(fn, name, alias, aliases)
             self._children.append(command)
             return command
-        return decorate if fn is None else decorate(fn)
+        if fn is None:
+            return decorate
+        return decorate(fn)
 
     def _split_docstring(_, x=None):
         parts = list(filter(None, re.split(r'\n\s*\n', x.__doc__ or '', 1)))
         return parts + [None] * (2 - len(parts))
 
-    def _configure_parser(self, parser, cmd=None, rvs=None, cmd_dests=None):
-        if cmd is None:
-            cmd = []
-        if rvs is None:
-            rvs = []
+    def _configure_parser(self, parser, stack=None, ecs=None, bare_dests=None):
+        self._parser = parser
 
-        self._command_dests = cmd_dests or []
+        if stack is None:
+            stack = []
+        if ecs is None:
+            ecs = []
+
+        if bare_dests is None:
+            self._bare_dests = ()
+        else:
+            self._bare_dests = bare_dests
 
         self._generator = self._fn()
         with context(parser=parser):
-            rvs.append(next(self._generator) or 0)
+            ec = next(self._generator)
+            if ec is None:
+                ec = 0
+            # TODO: validate return code? (integer -- what range?)
+            #       throw exception if invalid?
+            ecs.append(ec)
 
-        cmd = cmd + [self]
-        if self._children or self._command:
+        stack = stack + [self]
+        if self._children or self._bare:
             metavar = ''
             if self._children:
                 sorted_children = sorted(self._children, key=lambda x: x._name)
-                metavar = '{%s}' % ','.join([c._name for c in sorted_children])
-                if len(metavar) > parser._get_formatter()._width / 2.0:
+                if len(sorted_children) > SHOW_SUBCOMMANDS:
                     metavar = '{command}'
+                else:
+                    names = ','.join([c._name for c in sorted_children])
+                    metavar = '{%s}' % names
 
             subparsers = parser.add_subparsers(
                 dest='command',
@@ -63,84 +114,88 @@ class Command(object):
                 title='subcommands',
             )
 
-            command_dests = None
-            if self._command:
-                parser._clik_mark_command_arguments()
-                self._command._generator = self._command._fn()
+            bare_dests = None
+            if self._bare:
+                parser._clik_mark_bare_arguments_start()
+                self._bare._generator = self._bare._fn()
                 with context(parser=parser):
-                    rvs.append(next(self._command._generator) or 0)
-                command_dests = parser._clik_command_dests
-                parser.set_defaults(_clik_cmd=cmd + [self._command])
+                    ec = next(self._command._generator)
+                    if ec is None:
+                        ec = 0
+                    ecs.append(ec)
+                bare_dests = tuple(parser._clik_bare_dests)
+                parser.set_defaults(**{STACK: stack + [self._bare]})
             else:
                 subparsers.required = True
 
             for child in self._children:
                 description, epilog = self._split_docstring(child._fn)
-                rvs.extend(child._configure_parser(
+                ecs.extend(child._configure_parser(
                     subparsers.add_parser(
-                        child._name,
-                        aliases=child._aliases,
+                        child.name,
+                        aliases=child.aliases,
                         description=description,
                         epilog=epilog,
                         help=description,
                     ),
-                    cmd=cmd,
-                    rvs=rvs,
-                    cmd_dests=command_dests,
+                    stack=stack,
+                    ecs=ecs,
+                    bare_dests=bare_dests,
                 ))
         else:
-            parser.set_defaults(_clik_cmd=cmd)
+            parser.set_defaults(**{STACK: stack})
 
-        return rvs
+        return ecs
 
-    def _run(self, rvs=None):
-        if rvs is None:
-            rvs = []
+    def _run(self, ecs=None):
+        if ecs is None:
+            ecs = []
 
-        command = args._clik_cmd.pop(0)
+        stack = getattr(args, STACK)
+        command = stack.pop(0)
 
-        for dest in self._command_dests:
+        for dest in self._bare_dests:
             if hasattr(args, dest):
+                if getattr(args, dest) != self._parser.get_default(dest):
+                    # TODO error out: unrecognized argument: ...
+                    #      (i.e. imitate argparse as best as possible)
+                    ecs.append(1)
+                    return ecs
                 delattr(args, dest)
 
-        if len(args._clik_cmd) == 0:
+        if len(stack) == 0:
             try:
-                rv = next(command._generator)
+                ec = next(command._generator)
             except StopIteration:
-                rv = 0
+                ec = 0
         else:
             def run_children():
-                return args._clik_cmd[0]._run(rvs)
+                return stack[0]._run(ecs)
 
             with context(run_children=run_children):
                 try:
-                    rv = next(command._generator)
+                    ec = next(command._generator)
                 except StopIteration:
-                    rv = 0
+                    ec = 0
 
-            if len(args._clik_cmd) > 0:
+            if len(stack) > 0:
                 send = None
-                if rv is catch:
-                    rv = 0
+                if ec is catch:
+                    ec = 0
                     exception = None
                     try:
                         run_children()
                     except Exception as e:
                         exception = e
-                    send = (rvs, exception)
-                elif not rv:
+                    send = (ecs, exception)
+                elif not ec:
                     run_children()
-                    send = rvs
+                    send = ecs
                 if send:
                     try:
-                        rv = command._generator.send(send)
+                        ec = command._generator.send(send)
                     except StopIteration:
-                        rv = 0
+                        ec = 0
 
-        rvs.insert(0, rv)
-        return rvs
-
-    def command(self, fn):
-        command = Command(fn)
-        self._command = command
-        return command
+        ecs.insert(0, ec)
+        return ecs
