@@ -10,7 +10,7 @@ from __future__ import absolute_import, print_function
 import argparse
 import sys
 
-from clik.compat import PY33
+from clik.compat import PY2, PY33
 
 
 class HelpFormatter(argparse.HelpFormatter):
@@ -121,3 +121,38 @@ if PY33:
             attr.extend(arg_strings)
 
     argparse._SubParsersAction.__call__ = __call__
+
+
+if PY2:
+    # Alias code based on https://gist.github.com/sampsyo/471779.
+
+    class _AliasedSubParsersPseudoAction(argparse.Action):
+        def __init__(self, name, aliases, help):
+            dest = name
+            if aliases:
+                dest += ' (%s)' % ', '.join(aliases)
+            parent = super(_AliasedSubParsersPseudoAction, self)
+            parent.__init__(option_strings=[], dest=dest, help=help)
+
+    original_add_parser = argparse._SubParsersAction.add_parser
+
+    def add_parser(self, name, **kwargs):
+        if 'aliases' in kwargs:
+            aliases = kwargs.pop('aliases')
+        else:
+            aliases = []
+
+        parser = original_add_parser(self, name, **kwargs)
+
+        for alias in aliases:
+            self._name_parser_map[alias] = parser
+
+        if 'help' in kwargs:
+            help = kwargs.pop('help')
+            self._choices_actions.pop()
+            action = _AliasedSubParsersPseudoAction(name, aliases, help)
+            self._choices_actions.append(action)
+
+        return parser
+
+    argparse._SubParsersAction.add_parser = add_parser

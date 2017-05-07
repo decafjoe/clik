@@ -6,6 +6,7 @@ All the hackery that makes clik clik.
 :copyright: Copyright (c) Joe Joyce, 2009-2017.
 :license: BSD
 """
+from __future__ import print_function
 import re
 import sys
 
