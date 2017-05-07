@@ -10,6 +10,8 @@ from __future__ import absolute_import, print_function
 import argparse
 import sys
 
+from clik.compat import PY33
+
 
 class HelpFormatter(argparse.HelpFormatter):
     def _format_usage(self, *args, **kwargs):
@@ -83,3 +85,39 @@ class ArgumentParser(argparse.ArgumentParser):
             formatter.end_section()
         formatter.add_text(self.epilog)
         return formatter.format_help()
+
+
+if PY33:
+    # In Python 3.3, subparser defaults are not set properly. This was
+    # fixed in Python 3.4. The following code is a reformatted version
+    # of the 3.4 implementation. The __call__ function is
+    # monkeypatched into the argparse._SubParsersAction class, which
+    # makes me feel dirty but works. Suggestions welcome.
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        parser_name = values[0]
+        arg_strings = values[1:]
+
+        if self.dest is not argparse.SUPPRESS:
+            setattr(namespace, self.dest, parser_name)
+
+        try:
+            parser = self._name_parser_map[parser_name]
+        except KeyError:
+            fmt = 'unknown parser %(parser_name)r (choices: %(choices)s)'
+            args = {
+                'parser_name': parser_name,
+                'choices': ', '.join(self._name_parser_map),
+            }
+            raise argparse.ArgumentError(self, fmt % args)
+
+        subnamespace, arg_strings = parser.parse_known_args(arg_strings, None)
+        for key, value in vars(subnamespace).items():
+            setattr(namespace, key, value)
+
+        if arg_strings:
+            vars(namespace).setdefault(argparse._UNRECOGNIZED_ARGS_ATTR, [])
+            attr = getattr(namespace, argparse._UNRECOGNIZED_ARGS_ATTR)
+            attr.extend(arg_strings)
+
+    argparse._SubParsersAction.__call__ = __call__
