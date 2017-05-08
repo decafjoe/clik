@@ -133,6 +133,8 @@ class Command(object):
                         for action in parser._actions:
                             if action.dest == dest:
                                 break
+                        else:
+                            raise Exception('this code should be unreachable')
                         options = '/'.join(action.option_strings)
                         err = 'unrecognized arguments when calling subcommand'
                         fmt = '%s: error: %s: %s'

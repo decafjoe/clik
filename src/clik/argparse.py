@@ -127,6 +127,8 @@ if PY2:
             for action in self._actions:
                 if isinstance(action, argparse._SubParsersAction):
                     break
+            else:
+                raise Exception('this code should be unreachable')
             if action.required:
                 self.print_usage(sys.stderr)
                 fmt = '%s: error: the following arguments are required: %s\n'
