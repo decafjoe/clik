@@ -1,15 +1,22 @@
-- Py2/Py3 compatibility
-  - "reference" (python 3) implementation should be clean and compat-cruft-free
-  - API needs to be the same to the calling code (i.e. Command)
-
 - copyright
   - compat.py
   - magic.py
 
 - no positional args for bare commands
+  - mutex groups on bare commands?
+    - if user provides both with subcommand, will error out with mutex error,
+        not with "invalid with subcommand" error
 
-- exception hierarchy
+- exception hierarchy?
 
+- natural order for metavar ({foo,bar} instead of {bar,foo})
+
+- always insert exit codes at position 0
+  - make clik exit as soon as there's a non-zero exit code?
+
+- add else clauses to loops that should always break
+
+- clik-completion
 - clik-config
 - clik-logging
 - clik-shell

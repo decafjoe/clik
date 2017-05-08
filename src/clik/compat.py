@@ -14,17 +14,7 @@ PY26 = sys.version_info[0:2] == (2, 6)
 PY33 = sys.version_info[0:2] == (3, 3)
 
 
-def _identity(x):
-    return x
-
-
 if PY2:
-    def iterkeys(d, *args, **kwargs):
-        return d.iterkeys(*args, **kwargs)
-
-    def itervalues(d, *args, **kwargs):
-        return d.itervalues(*args, **kwargs)
-
     def iteritems(d, *args, **kwargs):
         return d.iteritems(*args, **kwargs)
 
@@ -33,13 +23,8 @@ if PY2:
         del cls.__bool__
         return cls
 else:
-    def iterkeys(d, *args, **kwargs):
-        return iter(d.keys(*args, **kwargs))
-
-    def itervalues(d, *args, **kwargs):
-        return iter(d.values(*args, **kwargs))
-
     def iteritems(d, *args, **kwargs):
         return iter(d.items(*args, **kwargs))
 
-    implements_bool = _identity
+    def implements_bool(cls):
+        return cls

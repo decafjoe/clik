@@ -8,6 +8,7 @@
 """
 from __future__ import absolute_import, print_function
 import argparse
+import contextlib
 import sys
 
 from clik.compat import PY2, PY26, PY33
@@ -33,10 +34,10 @@ class ArgumentParser(argparse.ArgumentParser):
         kwargs.setdefault('formatter_class', HelpFormatter)
         super(ArgumentParser, self).__init__(*args, **kwargs)
 
-    def _clik_start_bare_arguments(self):
+    @contextlib.contextmanager
+    def _clik_bare_arguments(self):
         self._clik_bare_dests_recording = True
-
-    def _clik_end_bare_arguments(self):
+        yield
         self._clik_bare_dests_recording = False
 
     def add_argument(self, *args, **kwargs):
@@ -52,16 +53,15 @@ class ArgumentParser(argparse.ArgumentParser):
         raise ArgumentParserExit(status)
 
     def _format_usage(self, formatter):
-        bare_dests = getattr(self, '_clik_bare_dests', ())
-        global_actions, bare_actions = [], []
+        actions, bare_actions = [], []
         for action in self._actions:
             if not isinstance(action, argparse._SubParsersAction):
                 bare_actions.append(action)
-            if action.dest not in bare_dests:
-                global_actions.append(action)
+            if action.dest not in self._clik_bare_dests:
+                actions.append(action)
         mutex_groups = self._mutually_exclusive_groups
-        formatter.add_usage(self.usage, global_actions, mutex_groups)
-        if bare_dests:
+        formatter.add_usage(self.usage, actions, mutex_groups)
+        if self._clik_bare_dests:
             formatter.add_usage(
                 self.usage,
                 bare_actions,
@@ -88,11 +88,7 @@ class ArgumentParser(argparse.ArgumentParser):
 
 
 if PY33 or PY26:
-    # In Python 3.3 and 2.6, subparser defaults are not set properly.
-    # This was fixed in Python 3.4/2.7. The following code is a
-    # reformatted version of the 3.4 implementation. The __call__
-    # function is monkeypatched into the argparse._SubParsersAction
-    # class, which makes me feel dirty but works. Suggestions welcome.
+    # Python 3.4 implementation
 
     def __call__(self, parser, namespace, values, option_string=None):
         parser_name = values[0]
@@ -140,7 +136,7 @@ if PY2:
 
     ArgumentParser.error = error
 
-    # Alias code based on https://gist.github.com/sampsyo/471779.
+    # https://gist.github.com/sampsyo/471779
 
     class _AliasedSubParsersPseudoAction(argparse.Action):
         def __init__(self, name, aliases, help):

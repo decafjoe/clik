@@ -51,7 +51,7 @@ class Context(object):
     def get(self, name):
         if name not in self._registry:
             raise UnregisteredMagicNameError(name)
-        if len(self._state[name]) == 0:
+        if not self._state[name]:
             raise UnboundMagicError(name)
         return self._state[name][0]
 
@@ -63,8 +63,9 @@ class Context(object):
     def pop(self, name):
         if name not in self._registry:
             raise UnregisteredMagicNameError(name)
-        if len(self._state[name]) > 0:
-            return self._state[name].pop(0)
+        if not self._state[name]:
+            raise UnboundMagicError(name)
+        return self._state[name].pop(0)
 
     def register(self, name):
         if name in self._registry:

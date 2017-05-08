@@ -22,8 +22,8 @@ class BareAlreadyRegisteredError(Exception):
     """Raised when a bare command function has already been registered."""
 
     def __init__(self, command):
-        msg = 'Bare command already registered for command "%s"' % command.name
-        super(BareAlreadyRegisteredError, self).__init__(msg)
+        fmt = 'Bare command already registered for command "%s"'
+        super(BareAlreadyRegisteredError, self).__init__(fmt % command._name)
         self.command = command
 
 
@@ -45,30 +45,20 @@ class Command(object):
             aliases = []
         else:
             aliases = list(aliases)
-
         if alias is not None:
             aliases.insert(0, alias)
-
         self._aliases = tuple(aliases)
-
-    @property
-    def aliases(self):
-        return self._aliases
-
-    @property
-    def name(self):
-        return self._name
 
     def bare(self, fn):
         if self._bare is not None:
             raise BareAlreadyRegisteredError(self)
         self._bare = Command(fn)
+        return self._bare
 
     def __call__(self, fn=None, name=None, alias=None, aliases=None):
         def decorate(fn):
-            command = Command(fn, name, alias, aliases)
-            self._children.append(command)
-            return command
+            self._children.append(Command(fn, name, alias, aliases))
+            return self._children[-1]
         if fn is None:
             return decorate
         return decorate(fn)
@@ -92,8 +82,6 @@ class Command(object):
             ec = next(self._generator)
             if ec is None:
                 ec = 0
-            # TODO: validate return code? (integer -- what range?)
-            #       throw exception if invalid?
             ecs.append(ec)
 
         stack = stack + [self]
@@ -114,14 +102,13 @@ class Command(object):
             )
 
             if self._bare:
-                parser._clik_start_bare_arguments()
                 self._bare._generator = self._bare._fn()
-                with context(parser=parser):
-                    ec = next(self._bare._generator)
-                    if ec is None:
-                        ec = 0
-                    ecs.append(ec)
-                parser._clik_end_bare_arguments()
+                with parser._clik_bare_arguments():
+                    with context(parser=parser):
+                        ec = next(self._bare._generator)
+                        if ec is None:
+                            ec = 0
+                        ecs.append(ec)
                 parser.set_defaults(**{STACK: stack + [self._bare]})
             else:
                 subparsers.required = True
@@ -130,8 +117,8 @@ class Command(object):
                 description, epilog = self._split_docstring(child._fn)
                 ecs.extend(child._configure_parser(
                     subparsers.add_parser(
-                        child.name,
-                        aliases=child.aliases,
+                        child._name,
+                        aliases=child._aliases,
                         description=description,
                         epilog=epilog,
                         help=description,
