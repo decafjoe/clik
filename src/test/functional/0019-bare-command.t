@@ -1,5 +1,5 @@
 $ dummy -h
-usage: dummy [-h] [-v] {bar,foo} ...
+usage: dummy [-h] [-v] {foo,bar} ...
        dummy [-h] [-v] [-t]
 
 optional arguments:
@@ -8,7 +8,7 @@ optional arguments:
   -t, --test
 
 subcommands:
-  {bar,foo}
+  {foo,bar}
     foo
     bar
 [1]
@@ -49,7 +49,7 @@ in foo, args.verbose: True
 
 
 $ dummy -t foo
-usage: dummy [-h] [-v] {bar,foo} ...
+usage: dummy [-h] [-v] {foo,bar} ...
        dummy [-h] [-v] [-t]
 dummy: error: unrecognized arguments when calling subcommand: -t/--test
 [1]

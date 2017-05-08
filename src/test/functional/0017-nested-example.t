@@ -9,7 +9,7 @@ configuring flob parser
 configuring spam parser
 configuring ham parser
 configuring eggs parser
-usage: dummy [-h] {bar,foo} ...
+usage: dummy [-h] {foo,bar} ...
 
 Program with subcommands.
 
@@ -17,7 +17,7 @@ optional arguments:
   -h, --help  show this help message and exit
 
 subcommands:
-  {bar,foo}
+  {foo,bar}
     foo       Foo all the things.
     bar       Bar all over the place.
 [1]
@@ -34,8 +34,8 @@ configuring flob parser
 configuring spam parser
 configuring ham parser
 configuring eggs parser
-usage: dummy [-h] {bar,foo} ...
-dummy: error: the following arguments are required: {bar,foo}
+usage: dummy [-h] {foo,bar} ...
+dummy: error: the following arguments are required: {foo,bar}
 [1]
 
 
@@ -169,7 +169,7 @@ configuring flob parser
 configuring spam parser
 configuring ham parser
 configuring eggs parser
-usage: dummy bar [-h] {flob,wubble} ...
+usage: dummy bar [-h] {wubble,flob} ...
 
 Bar all over the place.
 
@@ -177,7 +177,7 @@ optional arguments:
   -h, --help     show this help message and exit
 
 subcommands:
-  {flob,wubble}
+  {wubble,flob}
     wubble       Wubble wubble, toil and trouble.
     flob         Flob (whatever that is).
 [1]
@@ -194,8 +194,8 @@ configuring flob parser
 configuring spam parser
 configuring ham parser
 configuring eggs parser
-usage: dummy bar [-h] {flob,wubble} ...
-dummy bar: error: the following arguments are required: {flob,wubble}
+usage: dummy bar [-h] {wubble,flob} ...
+dummy bar: error: the following arguments are required: {wubble,flob}
 [1]
 
 
@@ -249,7 +249,7 @@ configuring flob parser
 configuring spam parser
 configuring ham parser
 configuring eggs parser
-usage: dummy bar flob [-h] {eggs,ham,spam} ...
+usage: dummy bar flob [-h] {spam,ham,eggs} ...
 
 Flob (whatever that is).
 
@@ -257,7 +257,7 @@ optional arguments:
   -h, --help       show this help message and exit
 
 subcommands:
-  {eggs,ham,spam}
+  {spam,ham,eggs}
     spam           Spam + 1.
     ham            Everybody's having ham!
     eggs           Some single-line description of the eggs subcommand.
@@ -275,8 +275,8 @@ configuring flob parser
 configuring spam parser
 configuring ham parser
 configuring eggs parser
-usage: dummy bar flob [-h] {eggs,ham,spam} ...
-dummy bar flob: error: the following arguments are required: {eggs,ham,spam}
+usage: dummy bar flob [-h] {spam,ham,eggs} ...
+dummy bar flob: error: the following arguments are required: {spam,ham,eggs}
 [1]
 
 

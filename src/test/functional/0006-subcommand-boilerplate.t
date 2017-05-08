@@ -1,5 +1,5 @@
 $ dummy -h
-usage: dummy [-h] {bar,foo} ...
+usage: dummy [-h] {foo,bar} ...
 
 Program with subcommands.
 
@@ -7,15 +7,15 @@ optional arguments:
   -h, --help  show this help message and exit
 
 subcommands:
-  {bar,foo}
+  {foo,bar}
     foo       Foo all the things.
     bar       Bar all over the place.
 [1]
 
 
 $ dummy
-usage: dummy [-h] {bar,foo} ...
-dummy: error: the following arguments are required: {bar,foo}
+usage: dummy [-h] {foo,bar} ...
+dummy: error: the following arguments are required: {foo,bar}
 [1]
 
 

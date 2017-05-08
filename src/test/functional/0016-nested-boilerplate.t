@@ -1,19 +1,19 @@
 $ dummy -h
-usage: dummy [-h] {bar,foo} ...
+usage: dummy [-h] {foo,bar} ...
 
 optional arguments:
   -h, --help  show this help message and exit
 
 subcommands:
-  {bar,foo}
+  {foo,bar}
     foo
     bar
 [1]
 
 
 $ dummy
-usage: dummy [-h] {bar,foo} ...
-dummy: error: the following arguments are required: {bar,foo}
+usage: dummy [-h] {foo,bar} ...
+dummy: error: the following arguments are required: {foo,bar}
 [1]
 
 
@@ -63,21 +63,21 @@ wobble
 
 
 $ dummy bar -h
-usage: dummy bar [-h] {flob,wubble} ...
+usage: dummy bar [-h] {wubble,flob} ...
 
 optional arguments:
   -h, --help     show this help message and exit
 
 subcommands:
-  {flob,wubble}
+  {wubble,flob}
     wubble
     flob
 [1]
 
 
 $ dummy bar
-usage: dummy bar [-h] {flob,wubble} ...
-dummy bar: error: the following arguments are required: {flob,wubble}
+usage: dummy bar [-h] {wubble,flob} ...
+dummy bar: error: the following arguments are required: {wubble,flob}
 [1]
 
 
@@ -95,13 +95,13 @@ wubble
 
 
 $ dummy bar flob -h
-usage: dummy bar flob [-h] {eggs,ham,spam} ...
+usage: dummy bar flob [-h] {spam,ham,eggs} ...
 
 optional arguments:
   -h, --help       show this help message and exit
 
 subcommands:
-  {eggs,ham,spam}
+  {spam,ham,eggs}
     spam
     ham
     eggs
@@ -109,8 +109,8 @@ subcommands:
 
 
 $ dummy bar flob
-usage: dummy bar flob [-h] {eggs,ham,spam} ...
-dummy bar flob: error: the following arguments are required: {eggs,ham,spam}
+usage: dummy bar flob [-h] {spam,ham,eggs} ...
+dummy bar flob: error: the following arguments are required: {spam,ham,eggs}
 [1]
 
 

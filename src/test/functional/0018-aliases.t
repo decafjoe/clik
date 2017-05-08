@@ -1,11 +1,11 @@
 $ dummy -h
-usage: dummy [-h] {bar,baz,foo} ...
+usage: dummy [-h] {foo,bar,baz} ...
 
 optional arguments:
   -h, --help            show this help message and exit
 
 subcommands:
-  {bar,baz,foo}
+  {foo,bar,baz}
     foo (f)
     bar (b, ba)
     baz (bz, another-alias, a_third)

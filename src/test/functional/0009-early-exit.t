@@ -1,12 +1,12 @@
 $ dummy -h
-usage: dummy [-h] [-f] {bar,foo} ...
+usage: dummy [-h] [-f] {foo,bar} ...
 
 optional arguments:
   -h, --help  show this help message and exit
   -f, --fail  fail without invoking the child command
 
 subcommands:
-  {bar,foo}
+  {foo,bar}
     foo
     bar
 [1]

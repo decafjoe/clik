@@ -85,11 +85,10 @@ class Command(object):
         if self._children or self._bare:
             metavar = ''
             if self._children:
-                sorted_children = sorted(self._children, key=lambda x: x._name)
-                if len(sorted_children) > SHOW_SUBCOMMANDS:
+                if len(self._children) > SHOW_SUBCOMMANDS:
                     metavar = '{command}'
                 else:
-                    names = ','.join([c._name for c in sorted_children])
+                    names = ','.join([c._name for c in self._children])
                     metavar = '{%s}' % names
 
             subparsers = parser.add_subparsers(

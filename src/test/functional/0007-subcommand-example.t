@@ -2,14 +2,14 @@ $ dummy -h
 configuring top-level parser
 configuring foo parser
 configuring bar parser
-usage: dummy [-h] [-v] {bar,foo} ...
+usage: dummy [-h] [-v] {foo,bar} ...
 
 optional arguments:
   -h, --help     show this help message and exit
   -v, --verbose  output more stuff
 
 subcommands:
-  {bar,foo}
+  {foo,bar}
     foo
     bar
 [1]
@@ -43,8 +43,8 @@ $ dummy
 configuring top-level parser
 configuring foo parser
 configuring bar parser
-usage: dummy [-h] [-v] {bar,foo} ...
-dummy: error: the following arguments are required: {bar,foo}
+usage: dummy [-h] [-v] {foo,bar} ...
+dummy: error: the following arguments are required: {foo,bar}
 [1]
 
 
@@ -92,7 +92,7 @@ $ dummy foo --verbose
 configuring top-level parser
 configuring foo parser
 configuring bar parser
-usage: dummy [-h] [-v] {bar,foo} ...
+usage: dummy [-h] [-v] {foo,bar} ...
 dummy: error: unrecognized arguments: --verbose
 [1]
 
@@ -141,6 +141,6 @@ $ dummy bar --verbose
 configuring top-level parser
 configuring foo parser
 configuring bar parser
-usage: dummy [-h] [-v] {bar,foo} ...
+usage: dummy [-h] [-v] {foo,bar} ...
 dummy: error: unrecognized arguments: --verbose
 [1]
