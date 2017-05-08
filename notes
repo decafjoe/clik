@@ -11,9 +11,6 @@
 
 - natural order for metavar ({foo,bar} instead of {bar,foo})
 
-- always insert exit codes at position 0
-  - make clik exit as soon as there's a non-zero exit code?
-
 - add else clauses to loops that should always break
 
 - clik-completion

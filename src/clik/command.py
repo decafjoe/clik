@@ -67,22 +67,19 @@ class Command(object):
         parts = list(filter(None, re.split(r'\n\s*\n', x.__doc__ or '', 1)))
         return parts + [None] * (2 - len(parts))
 
-    def _configure_parser(self, parser, parent=None, stack=None, ecs=None):
+    def _configure_parser(self, parser, parent=None, stack=None):
         self._parser = parser
 
         if stack is None:
             stack = []
-        if ecs is None:
-            ecs = []
         if parent is not None:
             self._parent = parent
 
         self._generator = self._fn()
         with context(parser=parser):
             ec = next(self._generator)
-            if ec is None:
-                ec = 0
-            ecs.append(ec)
+            if ec:
+                return ec
 
         stack = stack + [self]
         if self._children or self._bare:
@@ -106,31 +103,26 @@ class Command(object):
                 with parser._clik_bare_arguments():
                     with context(parser=parser):
                         ec = next(self._bare._generator)
-                        if ec is None:
-                            ec = 0
-                        ecs.append(ec)
+                        if ec:
+                            return ec
                 parser.set_defaults(**{STACK: stack + [self._bare]})
             else:
                 subparsers.required = True
 
             for child in self._children:
                 description, epilog = self._split_docstring(child._fn)
-                ecs.extend(child._configure_parser(
-                    subparsers.add_parser(
-                        child._name,
-                        aliases=child._aliases,
-                        description=description,
-                        epilog=epilog,
-                        help=description,
-                    ),
-                    parent=self,
-                    stack=stack,
-                    ecs=ecs,
-                ))
+                subparser = subparsers.add_parser(
+                    child._name,
+                    aliases=child._aliases,
+                    description=description,
+                    epilog=epilog,
+                    help=description,
+                )
+                ec = child._configure_parser(subparser, self, stack)
+                if ec:
+                    return ec
         else:
             parser.set_defaults(**{STACK: stack})
-
-        return ecs
 
     def _check_bare_arguments(self):
         if self._parent is not None:
@@ -149,54 +141,51 @@ class Command(object):
                         print(msg, file=sys.stderr)
                         return 1
                     delattr(args, dest)
-        return 0
 
-    def _run(self, ecs=None):
+    def _run(self, child=False):
         stack = getattr(args, STACK)
 
-        if ecs is None:
-            ecs = []
+        if not child:
             for command in stack:
                 ec = command._check_bare_arguments()
                 if ec:
-                    ecs.insert(0, ec)
-                    return ecs
+                    return ec
 
         command = stack.pop(0)
 
-        if len(stack) == 0:
-            try:
-                ec = next(command._generator)
-            except StopIteration:
-                ec = 0
-        else:
+        if stack:
             def run_children():
-                return stack[0]._run(ecs)
+                return stack[0]._run(child=True)
 
             with context(run_children=run_children):
                 try:
                     ec = next(command._generator)
                 except StopIteration:
                     ec = 0
+            if ec and ec is not catch:
+                return ec
 
-            if len(stack) > 0:
+            if stack:
                 send = None
                 if ec is catch:
                     ec = 0
                     exception = None
                     try:
-                        run_children()
+                        ec = run_children()
                     except Exception as e:
                         exception = e
-                    send = (ecs, exception)
+                    send = (ec, exception)
                 elif not ec:
-                    run_children()
-                    send = ecs
-                if send:
+                    send = ec = run_children()
+                if send is not None:
                     try:
                         ec = command._generator.send(send)
                     except StopIteration:
-                        ec = 0
+                        pass
+        else:
+            try:
+                ec = next(command._generator)
+            except StopIteration:
+                ec = 0
 
-        ecs.insert(0, ec)
-        return ecs
+        return ec

@@ -6,11 +6,11 @@ def dummy():
     yield
     print('running setup code')
     try:
-        child_exit_codes = run_children()
+        child_exit_code = run_children()
     except Exception as e:
         print('exception:', e)
     else:
-        print('child exit codes:', child_exit_codes)
+        print('child exit code:', child_exit_code)
     print('running tear down code')
 
 

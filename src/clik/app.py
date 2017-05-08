@@ -46,13 +46,13 @@ class App(Command):
 
         description, epilog = self._split_docstring(self._fn)
         parser = ArgumentParser(
-            prog=self.name,
+            prog=self._name,
             description=description,
             epilog=epilog,
         )
-        nonzero_ecs = [ec for ec in self._configure_parser(parser) if ec != 0]
-        if nonzero_ecs:
-            return exit(nonzero_ecs[0])
+        ec = self._configure_parser(parser)
+        if ec:
+            return exit(ec)
 
         try:
             args = parser.parse_args(argv[1:])  # ...and pass it here...
@@ -67,7 +67,4 @@ class App(Command):
         # mutate args until we know they're being called. But I could
         # probably be convinced to change that.
 
-        nonzero_ecs = [ec for ec in self._run() if ec != 0]
-        if nonzero_ecs:
-            return exit(nonzero_ecs[0])
-        return exit(0)
+        return exit(self._run())
