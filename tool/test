@@ -20,7 +20,7 @@ functional_tests_directory = os.path.join(root, 'src', 'test', 'functional')
 functional_test_suffix = '.t'
 unit_tests_directory = os.path.join(root, 'src', 'test', 'unit')
 
-functional_test_re = re.compile(r'^(?P<n>\d{3})-?(?P<name>[\w-]+)?(\..+)?$')
+functional_test_re = re.compile(r'^(?P<n>\d{4})-?(?P<name>[\w-]+)?(\..+)?$')
 
 
 def main(argv=None, exit=sys.exit):
