@@ -30,12 +30,13 @@ class ArgumentParserExit(Exception):
 class ArgumentParser(argparse.ArgumentParser):
     def __init__(self, *args, **kwargs):
         self._clik_bare_dests_recording = False
-        self._clik_bare_dests = []
+        self._clik_bare_dests = None
         kwargs.setdefault('formatter_class', HelpFormatter)
         super(ArgumentParser, self).__init__(*args, **kwargs)
 
     @contextlib.contextmanager
     def _clik_bare_arguments(self):
+        self._clik_bare_dests = []
         self._clik_bare_dests_recording = True
         yield
         self._clik_bare_dests_recording = False
@@ -53,21 +54,23 @@ class ArgumentParser(argparse.ArgumentParser):
         raise ArgumentParserExit(status)
 
     def _format_usage(self, formatter):
-        actions, bare_actions = [], []
+        bare_dests = self._clik_bare_dests
+        actions, bare_actions, subparsers = [], [], None
         for action in self._actions:
-            if not isinstance(action, argparse._SubParsersAction):
-                bare_actions.append(action)
-            if action.dest not in self._clik_bare_dests:
+            if isinstance(action, argparse._SubParsersAction):
+                subparsers = action
                 actions.append(action)
+            else:
+                bare_actions.append(action)
+                if bare_dests is None or action.dest not in bare_dests:
+                    actions.append(action)
+        prefix = 'usage: '
         mutex_groups = self._mutually_exclusive_groups
-        formatter.add_usage(self.usage, actions, mutex_groups)
-        if self._clik_bare_dests:
-            formatter.add_usage(
-                self.usage,
-                bare_actions,
-                mutex_groups,
-                '       ',
-            )
+        if bare_dests is None or subparsers:
+            formatter.add_usage(self.usage, actions, mutex_groups, prefix)
+            prefix = '       '
+        if bare_dests is not None:
+            formatter.add_usage(self.usage, bare_actions, mutex_groups, prefix)
         return formatter
 
     def format_usage(self):
@@ -87,9 +90,7 @@ class ArgumentParser(argparse.ArgumentParser):
         return formatter.format_help()
 
 
-if PY33 or PY26:
-    # Python 3.4 implementation
-
+if PY33 or PY26:  # pragma: no cover (copypaste of Python 3.4 implementation)
     def __call__(self, parser, namespace, values, option_string=None):
         parser_name = values[0]
         arg_strings = values[1:]
@@ -124,10 +125,10 @@ if PY2:
 
     def error(self, message=None):
         if message == 'too few arguments':
-            for action in self._actions:
+            for action in self._actions:  # pragma: no branch (unreachable)
                 if isinstance(action, argparse._SubParsersAction):
                     break
-            else:
+            else:  # pragma: no cover (unreachable)
                 raise Exception('this code should be unreachable')
             if action.required:
                 self.print_usage(sys.stderr)
@@ -151,22 +152,14 @@ if PY2:
     original_add_parser = argparse._SubParsersAction.add_parser
 
     def add_parser(self, name, **kwargs):
-        if 'aliases' in kwargs:
-            aliases = kwargs.pop('aliases')
-        else:
-            aliases = []
-
+        aliases = kwargs.pop('aliases')
         parser = original_add_parser(self, name, **kwargs)
-
         for alias in aliases:
             self._name_parser_map[alias] = parser
-
-        if 'help' in kwargs:
-            help = kwargs.pop('help')
-            self._choices_actions.pop()
-            action = _AliasedSubParsersPseudoAction(name, aliases, help)
-            self._choices_actions.append(action)
-
+        help = kwargs.pop('help')
+        self._choices_actions.pop()
+        action = _AliasedSubParsersPseudoAction(name, aliases, help)
+        self._choices_actions.append(action)
         return parser
 
     argparse._SubParsersAction.add_parser = add_parser

@@ -37,7 +37,7 @@ class App(Command):
         super(App, self).__init__(fn, name=name)
 
     def main(self, argv=None, exit=sys.exit):
-        if argv is None:
+        if argv is None:  # pragma: no cover (hard to test, obviously correct)
             argv = sys.argv
 
         context.push('current_app', self)

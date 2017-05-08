@@ -82,32 +82,28 @@ class Command(object):
                 return ec
 
         stack = stack + [self]
-        if self._children or self._bare:
-            metavar = ''
-            if self._children:
-                if len(self._children) > SHOW_SUBCOMMANDS:
-                    metavar = '{command}'
-                else:
-                    names = ','.join([c._name for c in self._children])
-                    metavar = '{%s}' % names
+        if self._bare:
+            self._bare._generator = self._bare._fn()
+            with parser._clik_bare_arguments():
+                with context(parser=parser):
+                    ec = next(self._bare._generator)
+                    if ec:
+                        return ec
+            parser.set_defaults(**{STACK: stack + [self._bare]})
 
+        if self._children:
+            if len(self._children) > SHOW_SUBCOMMANDS:
+                metavar = '{command}'
+            else:
+                names = ','.join([c._name for c in self._children])
+                metavar = '{%s}' % names
             subparsers = parser.add_subparsers(
                 dest='command',
                 metavar=metavar,
                 title='subcommands',
             )
-
-            if self._bare:
-                self._bare._generator = self._bare._fn()
-                with parser._clik_bare_arguments():
-                    with context(parser=parser):
-                        ec = next(self._bare._generator)
-                        if ec:
-                            return ec
-                parser.set_defaults(**{STACK: stack + [self._bare]})
-            else:
+            if not self._bare:
                 subparsers.required = True
-
             for child in self._children:
                 description, epilog = self._split_docstring(child._fn)
                 subparser = subparsers.add_parser(
@@ -120,20 +116,21 @@ class Command(object):
                 ec = child._configure_parser(subparser, self, stack)
                 if ec:
                     return ec
-        else:
+
+        if not self._bare and not self._children:
             parser.set_defaults(**{STACK: stack})
 
     def _check_bare_arguments(self):
         if self._parent is not None:
             parser = self._parent._parser
-            for dest in parser._clik_bare_dests:
-                if hasattr(args, dest):
+            if parser._clik_bare_dests is not None:
+                for dest in parser._clik_bare_dests:
                     if getattr(args, dest) != parser.get_default(dest):
                         parser.print_usage(sys.stderr)
-                        for action in parser._actions:
+                        for action in parser._actions:  # pragma: no branch
                             if action.dest == dest:
                                 break
-                        else:
+                        else:  # pragma: no cover (unreachable)
                             raise Exception('this code should be unreachable')
                         options = '/'.join(action.option_strings)
                         err = 'unrecognized arguments when calling subcommand'
@@ -167,7 +164,6 @@ class Command(object):
                 return ec
 
             if stack:
-                send = None
                 if ec is catch:
                     ec = 0
                     exception = None
@@ -176,13 +172,12 @@ class Command(object):
                     except Exception as e:
                         exception = e
                     send = (ec, exception)
-                elif not ec:
+                else:
                     send = ec = run_children()
-                if send is not None:
-                    try:
-                        ec = command._generator.send(send)
-                    except StopIteration:
-                        pass
+                try:
+                    ec = command._generator.send(send)
+                except StopIteration:
+                    pass
         else:
             try:
                 ec = next(command._generator)

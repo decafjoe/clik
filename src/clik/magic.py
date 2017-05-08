@@ -78,7 +78,7 @@ context = Context()
 
 
 @implements_bool
-class Magic(object):
+class Magic(object):  # pragma: no cover (werkzeug implementation)
     def __init__(self, name, context=context):
         context.register(name)
         object.__setattr__(self, '_Magic__name', name)
@@ -140,63 +140,65 @@ class Magic(object):
         def __delslice__(self, i, j):
             del self._get_current_object()[i:j]
 
-    __setattr__ = lambda x, n, v: setattr(x._get_current_object(), n, v)
-    __delattr__ = lambda x, n: delattr(x._get_current_object(), n)
-    __str__ = lambda x: str(x._get_current_object())
-    __lt__ = lambda x, o: x._get_current_object() < o
-    __le__ = lambda x, o: x._get_current_object() <= o
-    __eq__ = lambda x, o: x._get_current_object() == o
-    __ne__ = lambda x, o: x._get_current_object() != o
-    __gt__ = lambda x, o: x._get_current_object() > o
-    __ge__ = lambda x, o: x._get_current_object() >= o
-    __cmp__ = lambda x, o: cmp(x._get_current_object(), o)  # noqa
-    __hash__ = lambda x: hash(x._get_current_object())
-    __call__ = lambda x, *a, **kw: x._get_current_object()(*a, **kw)
-    __len__ = lambda x: len(x._get_current_object())
-    __getitem__ = lambda x, i: x._get_current_object()[i]
-    __iter__ = lambda x: iter(x._get_current_object())
-    __contains__ = lambda x, i: i in x._get_current_object()
-    __add__ = lambda x, o: x._get_current_object() + o
-    __sub__ = lambda x, o: x._get_current_object() - o
-    __mul__ = lambda x, o: x._get_current_object() * o
-    __floordiv__ = lambda x, o: x._get_current_object() // o
-    __mod__ = lambda x, o: x._get_current_object() % o
-    __divmod__ = lambda x, o: x._get_current_object().__divmod__(o)
-    __pow__ = lambda x, o: x._get_current_object() ** o
-    __lshift__ = lambda x, o: x._get_current_object() << o
-    __rshift__ = lambda x, o: x._get_current_object() >> o
-    __and__ = lambda x, o: x._get_current_object() & o
-    __xor__ = lambda x, o: x._get_current_object() ^ o
-    __or__ = lambda x, o: x._get_current_object() | o
-    __div__ = lambda x, o: x._get_current_object().__div__(o)
-    __truediv__ = lambda x, o: x._get_current_object().__truediv__(o)
-    __neg__ = lambda x: -(x._get_current_object())
-    __pos__ = lambda x: +(x._get_current_object())
-    __abs__ = lambda x: abs(x._get_current_object())
-    __invert__ = lambda x: ~(x._get_current_object())
-    __complex__ = lambda x: complex(x._get_current_object())
-    __int__ = lambda x: int(x._get_current_object())
-    __long__ = lambda x: long(x._get_current_object())  # noqa
-    __float__ = lambda x: float(x._get_current_object())
-    __oct__ = lambda x: oct(x._get_current_object())
-    __hex__ = lambda x: hex(x._get_current_object())
-    __index__ = lambda x: x._get_current_object().__index__()
-    __coerce__ = lambda x, o: x._get_current_object().__coerce__(x, o)
-    __enter__ = lambda x: x._get_current_object().__enter__()
-    __exit__ = lambda x, *a, **kw: x._get_current_object().__exit__(*a, **kw)
-    __radd__ = lambda x, o: o + x._get_current_object()
-    __rsub__ = lambda x, o: o - x._get_current_object()
-    __rmul__ = lambda x, o: o * x._get_current_object()
-    __rdiv__ = lambda x, o: o / x._get_current_object()
+    def __setattr__(x, n, v): return setattr(x._get_current_object(), n, v)
+    def __delattr__(x, n): return delattr(x._get_current_object(), n)
+    def __str__(x): return str(x._get_current_object())
+    def __lt__(x, o): return x._get_current_object() < o
+    def __le__(x, o): return x._get_current_object() <= o
+    def __eq__(x, o): return x._get_current_object() == o
+    def __ne__(x, o): return x._get_current_object() != o
+    def __gt__(x, o): return x._get_current_object() > o
+    def __ge__(x, o): return x._get_current_object() >= o
+    def __cmp__(x, o): return cmp(x._get_current_object(), o)
+    def __hash__(x): return hash(x._get_current_object())
+    def __call__(x, *a, **kw): return x._get_current_object()(*a, **kw)
+    def __len__(x): return len(x._get_current_object())
+    def __getitem__(x, i): return x._get_current_object()[i]
+    def __iter__(x): return iter(x._get_current_object())
+    def __contains__(x, i): return i in x._get_current_object()
+    def __add__(x, o): return x._get_current_object() + o
+    def __sub__(x, o): return x._get_current_object() - o
+    def __mul__(x, o): return x._get_current_object() * o
+    def __floordiv__(x, o): return x._get_current_object() // o
+    def __mod__(x, o): return x._get_current_object() % o
+    def __divmod__(x, o): return x._get_current_object().__divmod__(o)
+    def __pow__(x, o): return x._get_current_object() ** o
+    def __lshift__(x, o): return x._get_current_object() << o
+    def __rshift__(x, o): return x._get_current_object() >> o
+    def __and__(x, o): return x._get_current_object() & o
+    def __xor__(x, o): return x._get_current_object() ^ o
+    def __or__(x, o): return x._get_current_object() | o
+    def __div__(x, o): return x._get_current_object().__div__(o)
+    def __truediv__(x, o): return x._get_current_object().__truediv__(o)
+    def __neg__(x): return -(x._get_current_object())
+    def __pos__(x): return +(x._get_current_object())
+    def __abs__(x): return abs(x._get_current_object())
+    def __invert__(x): return ~(x._get_current_object())
+    def __complex__(x): return complex(x._get_current_object())
+    def __int__(x): return int(x._get_current_object())
+    def __long__(x): return long(x._get_current_object())
+    def __float__(x): return float(x._get_current_object())
+    def __oct__(x): return oct(x._get_current_object())
+    def __hex__(x): return hex(x._get_current_object())
+    def __index__(x): return x._get_current_object().__index__()
+    def __coerce__(x, o): return x._get_current_object().__coerce__(x, o)
+    def __enter__(x): return x._get_current_object().__enter__()
+    def __exit__(x, *a, **kw):
+        return x._get_current_object().__exit__(*a, **kw)
+    def __radd__(x, o): return o + x._get_current_object()
+    def __rsub__(x, o): return o - x._get_current_object()
+    def __rmul__(x, o): return o * x._get_current_object()
+    def __rdiv__(x, o): return o / x._get_current_object()
     if PY2:
-        __rtruediv__ = lambda x, o: x._get_current_object().__rtruediv__(o)
+        def __rtruediv__(x, o): return x._get_current_object().__rtruediv__(o)
     else:
         __rtruediv__ = __rdiv__
-    __rfloordiv__ = lambda x, o: o // x._get_current_object()
-    __rmod__ = lambda x, o: o % x._get_current_object()
-    __rdivmod__ = lambda x, o: x._get_current_object().__rdivmod__(o)
-    __copy__ = lambda x: copy.copy(x._get_current_object())
-    __deepcopy__ = lambda x, memo: copy.deepcopy(x._get_current_object(), memo)
+    def __rfloordiv__(x, o): return o // x._get_current_object()
+    def __rmod__(x, o): return o % x._get_current_object()
+    def __rdivmod__(x, o): return x._get_current_object().__rdivmod__(o)
+    def __copy__(x): return copy.copy(x._get_current_object())
+    def __deepcopy__(x, memo):
+        return copy.deepcopy(x._get_current_object(), memo)
 
 
 current_app = Magic('current_app')
