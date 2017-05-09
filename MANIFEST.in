@@ -1,4 +1,3 @@
 include CHANGELOG
 include LICENSE
 include README
-prune src/test
