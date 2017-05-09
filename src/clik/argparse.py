@@ -53,7 +53,7 @@ class ArgumentParser(argparse.ArgumentParser):
             self._clik_bare_dests.append(argument.dest)
         return argument
 
-    def _format_usage(self, formatter):
+    def _clik_format_usage(self, formatter):
         bare_dests = self._clik_bare_dests
         actions, bare_actions, subparsers = [], [], None
         for action in self._actions:
@@ -74,11 +74,11 @@ class ArgumentParser(argparse.ArgumentParser):
         return formatter
 
     def format_usage(self):
-        return self._format_usage(self._get_formatter()).format_help()
+        return self._clik_format_usage(self._get_formatter()).format_help()
 
     def format_help(self):
         formatter = self._get_formatter()
-        self._format_usage(formatter)
+        self._clik_format_usage(formatter)
         formatter.add_text('\n')
         formatter.add_text(self.description)
         for action_group in self._action_groups:
