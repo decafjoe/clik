@@ -90,7 +90,7 @@ class ArgumentParser(argparse.ArgumentParser):
         return formatter.format_help()
 
 
-if PY33 or PY26:  # pragma: no cover (copypaste of Python 3.4 implementation)
+if PY33 or PY26:  # pragma: no cover (~copypaste of Python 3.4 implementation)
     def __call__(self, parser, namespace, values, option_string=None):
         parser_name = values[0]
         arg_strings = values[1:]
