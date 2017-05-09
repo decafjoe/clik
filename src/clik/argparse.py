@@ -34,6 +34,11 @@ class ArgumentParser(argparse.ArgumentParser):
         kwargs.setdefault('formatter_class', HelpFormatter)
         super(ArgumentParser, self).__init__(*args, **kwargs)
 
+    def exit(self, status=0, message=None):
+        if message:
+            print(message, end='', file=sys.stderr)
+        raise ArgumentParserExit(status)
+
     @contextlib.contextmanager
     def _clik_bare_arguments(self):
         self._clik_bare_dests = []
@@ -47,11 +52,6 @@ class ArgumentParser(argparse.ArgumentParser):
         if self._clik_bare_dests_recording:
             self._clik_bare_dests.append(argument.dest)
         return argument
-
-    def exit(self, status=0, message=None):
-        if message:
-            print(message, end='', file=sys.stderr)
-        raise ArgumentParserExit(status)
 
     def _format_usage(self, formatter):
         bare_dests = self._clik_bare_dests
