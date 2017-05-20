@@ -14,6 +14,13 @@ import sys
 from clik.compat import PY2, PY26, PY33
 
 
+class BareUnsupportedFeatureError(Exception):
+    def __init__(self, feature):
+        msg = 'Feature is not supported for bare commands: %s' % feature
+        super(BareUnsupportedFeatureError, self).__init__(msg)
+        self.feature = feature
+
+
 class HelpFormatter(argparse.HelpFormatter):
     def _format_usage(self, *args, **kwargs):
         parent = super(HelpFormatter, self)
@@ -47,11 +54,19 @@ class ArgumentParser(argparse.ArgumentParser):
         self._clik_bare_dests_recording = False
 
     def add_argument(self, *args, **kwargs):
-        # TODO: Disallow positional arguments if we are recording bare dests.
         argument = super(ArgumentParser, self).add_argument(*args, **kwargs)
         if self._clik_bare_dests_recording:
+            if argument.nargs:
+                msg = 'positional arguments (dest: %s)' % argument.dest
+                raise BareUnsupportedFeatureError(msg)
             self._clik_bare_dests.append(argument.dest)
         return argument
+
+    def add_mutually_exclusive_group(self, *args, **kwargs):
+        if self._clik_bare_dests_recording:
+            raise BareUnsupportedFeatureError('mutually exclusive groups')
+        s = super(ArgumentParser, self)
+        return s.add_mutually_exclusive_group(*args, **kwargs)
 
     def _clik_format_usage(self, formatter):
         bare_dests = self._clik_bare_dests
