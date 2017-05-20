@@ -53,5 +53,3 @@ def bar():
     join_character = '' if args.fast else ' '
     number = 10 if args.verbose else 5
     print(join_character.join(['bar' for _ in range(number)]))
-
-    yield 42

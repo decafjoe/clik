@@ -104,7 +104,7 @@ configuring bar parser
 running the code after the yield in "dummy"
 running bar
 bar bar bar bar bar
-[42]
+[0]
 
 
 $ dummy --verbose bar
@@ -114,7 +114,7 @@ configuring bar parser
 running the code after the yield in "dummy"
 running bar
 bar bar bar bar bar bar bar bar bar bar
-[42]
+[0]
 
 
 $ dummy bar --fast
@@ -124,7 +124,7 @@ configuring bar parser
 running the code after the yield in "dummy"
 running bar
 barbarbarbarbar
-[42]
+[0]
 
 
 $ dummy --verbose bar --fast
@@ -134,7 +134,7 @@ configuring bar parser
 running the code after the yield in "dummy"
 running bar
 barbarbarbarbarbarbarbarbarbar
-[42]
+[0]
 
 
 $ dummy bar --verbose

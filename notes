@@ -1,8 +1,5 @@
 - lint
 
-- streamline "expository" functional tests
-  - move esoteric examples to the 100 series
-
 - roadmap
   - support positional args for bare commands
   - support mutually exclusive groups for bare commands

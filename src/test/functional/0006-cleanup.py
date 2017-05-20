@@ -19,4 +19,3 @@ def foo():
 def bar():
     yield
     print('bar bar bar bar bar')
-    yield 42

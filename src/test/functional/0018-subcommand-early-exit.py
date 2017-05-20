@@ -14,7 +14,7 @@ def dummy():
     yield
 
     if args.fail:
-        yield 42
+        yield 7
 
 
 @dummy
@@ -27,3 +27,4 @@ def foo():
 def bar():
     yield
     print('bar bar bar bar bar')
+    yield 42

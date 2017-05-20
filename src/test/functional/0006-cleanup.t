@@ -9,4 +9,4 @@ $ dummy bar
 running setup code
 bar bar bar bar bar
 running tear down code
-[42]
+[0]

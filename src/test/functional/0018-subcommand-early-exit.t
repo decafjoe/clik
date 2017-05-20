@@ -18,4 +18,13 @@ foo foo foo foo foo
 
 
 $ dummy -f foo
+[7]
+
+
+$ dummy bar
+bar bar bar bar bar
 [42]
+
+
+$ dummy -f bar
+[7]
