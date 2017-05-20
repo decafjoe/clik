@@ -189,13 +189,18 @@ def main(argv=None, exit=sys.exit):
         print(test_file.result, end='')
     print()
 
-    rv = 0
+    successes, failures = 0, 0
     for test_file in test_files:
         if test_file.failure:
             print('\n\nFAILURE: %s\n%s' % (test_file.name, test_file.failure))
-            rv = 1
+            failures += 1
+        else:
+            successes += 1
 
-    exit(rv)
+    fmt = 'ran %i tests (%i successes, %i failures)'
+    print(fmt % (successes + failures, successes, failures))
+
+    exit(1 if failures else 0)
 
 
 if __name__ == '__main__':
