@@ -47,3 +47,9 @@ optional arguments:
 $ dummy bar
 bar
 [0]
+
+
+$ dummy baz
+usage: dummy [-h] {foo,bar} ...
+dummy: error: argument {foo,bar}: invalid choice: 'baz' (choose from 'foo', 'bar')
+[1]
