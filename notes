@@ -1,9 +1,5 @@
 - lint
 
-- copyright
-  - compat.py
-  - magic.py
-
 - no positional args for bare commands
   - mutex groups on bare commands?
     - if user provides both with subcommand, will error out with mutex error,
