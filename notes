@@ -1,3 +1,5 @@
+- lint
+
 - copyright
   - compat.py
   - magic.py
@@ -6,6 +8,9 @@
   - mutex groups on bare commands?
     - if user provides both with subcommand, will error out with mutex error,
         not with "invalid with subcommand" error
+
+- streamline "expository" functional tests
+  - move esoteric examples to the 100 series
 
 - clik-completion
 - clik-config
