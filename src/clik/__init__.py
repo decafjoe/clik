@@ -6,7 +6,7 @@ The command line interface kit.
 :copyright: Copyright (c) Joe Joyce, 2009-2017.
 :license: BSD
 """
-__version__ = '0.9.0'
+__version__ = '0.90.0'
 
 
 from clik.app import app  # noqa: F401
