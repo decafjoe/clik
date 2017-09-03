@@ -21,7 +21,7 @@ sys.path.insert(0, src_path)
 
 # Basic project information
 project = u'clik'
-copyright = u'2016-2017, Joe Joyce'
+copyright = u'2009-2017, Joe Joyce'
 author = u'Joe Joyce'
 version = u'0.9'
 release = u'0.9.0'
