@@ -49,7 +49,7 @@ setup(
     name=name,
     package_dir={'': 'src'},
     packages=find_packages('src'),
-    url='http://clik.readthedocs.io/',
+    url='http://clik.readthedocs.io',
     version=version,
     zip_safe=False,
 )
