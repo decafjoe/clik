@@ -4,13 +4,13 @@
 ===========
 
 
-0.9.0
-=====
+0.90.0
+======
 
 * Initial public re-release.
 
 
-Pre-0.9.0
-=========
+Pre-0.90.0
+==========
 
 The Dark Old Days.
