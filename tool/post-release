@@ -12,7 +12,7 @@ function xpsed {
 }
 
 root_dir="$(cd $(dirname $0)/.. && pwd)"
-version_file="$root_dir/src/clik.py"
+version_file="$root_dir/src/clik/__init__.py"
 
 current_version=$1
 current_major=$(echo $current_version | awk -F. '{print $1}')
