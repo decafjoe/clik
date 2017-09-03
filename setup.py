@@ -6,7 +6,6 @@ Package configuration for clik.
 :copyright: Copyright (c) Joe Joyce, 2009-2017.
 :license: BSD
 """
-import os
 import sys
 
 from setuptools import find_packages, setup
@@ -19,27 +18,11 @@ requires = ()
 if sys.version_info[0] == 2 and sys.version_info[1] == 6:
     requires = ('argparse',)
 
-root = os.path.abspath(os.path.dirname(__file__))
+description = 'A tool for writing complex command-line interfaces with ' \
+              'minimal boilerplate and bookkeeping.'
+long_description = 'Please see the official project page at ' \
+                   'http://clik.readthedocs.io.'
 
-
-def read(filename, default):
-    """
-    Read and return content of FILENAME (or FILENAME.rst) from root directory.
-
-    If neither of the files exist, ``default`` is returned.
-    """
-    path = os.path.join(root, filename)
-    if os.path.exists(path):
-        return open(path).read()
-    path = '%s.rst' % path
-    if os.path.exists(path):
-        return open(path).read()
-    return default
-
-
-changelog = read('CHANGELOG', 'No changelog present.')
-readme = read('README', 'No readme present.')
-long_description = '%s\n\n%s' % (readme, changelog)
 
 setup(
     author='Joe Joyce',
@@ -59,14 +42,14 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: Implementation :: PyPy',
     ],
-    description='Library for writing subcommand-style command-line apps.',
+    description=description,
     install_requires=requires,
     license='BSD',
     long_description=long_description,
     name=name,
     package_dir={'': 'src'},
     packages=find_packages('src'),
-    url='https://bitbucket.org/decafjoe/%s' % name,
+    url='http://clik.readthedocs.io/',
     version=version,
     zip_safe=False,
 )
