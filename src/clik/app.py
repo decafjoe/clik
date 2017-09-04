@@ -10,7 +10,8 @@ import sys
 
 from clik.argparse import ArgumentParser, ArgumentParserExit
 from clik.command import Command
-from clik.magic import Context, Magic
+from clik.context import Context
+from clik.magic import Magic
 
 
 args = Magic('args')

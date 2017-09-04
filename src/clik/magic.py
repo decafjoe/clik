@@ -1,112 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-"Magic" variables, inspired by Werkzeug's context-local objects.
+Slightly adapted version of Werkzeug's :class:`werkzeug.local.LocalProxy`.
 
-:author: Joe Joyce <joe@decafjoe.com>
-:copyright: Copyright (c) Joe Joyce, 2009-2017.
-:license: BSD
-"""
-import contextlib
-import copy
-
-from clik.compat import implements_bool, iteritems, PY2
-
-
-class LockedMagicError(Exception):
-    def __init__(self, name):
-        msg = 'The magic variable "%s" is currently locked' % name
-        super(LockedMagicError, self).__init__(msg)
-        self.name = name
-
-
-class MagicNameConflictError(Exception):
-    def __init__(self, name):
-        msg = 'The magic variable name "%s" is already registered' % name
-        super(MagicNameConflictError, self).__init__(msg)
-        self.name = name
-
-
-class UnregisteredMagicNameError(Exception):
-    def __init__(self, name):
-        msg = 'The magic variable "%s" is not registered' % name
-        super(UnregisteredMagicNameError, self).__init__(msg)
-        self.name = name
-
-
-class UnboundMagicError(Exception):
-    def __init__(self, name):
-        msg = 'The magic variable "%s" is not bound' % name
-        super(UnboundMagicError, self).__init__(msg)
-        self.name = name
-
-
-class Context(object):
-    def __init__(self):
-        self._registry = []
-        self._state = {}
-
-    @contextlib.contextmanager
-    def __call__(self, **kwargs):
-        keys = []
-        for key, value in iteritems(kwargs):
-            self.push(key, value)
-            keys.append(key)
-        yield
-        for key in keys:
-            self.pop(key)
-
-    @contextlib.contextmanager
-    def acquire(self, *magic_variables):
-        for variable in magic_variables:
-            if variable._Magic__context is not None:
-                raise LockedMagicError(variable._Magic__context)
-            self.register(variable._Magic__name)
-            object.__setattr__(variable, '_Magic__context', self)
-        try:
-            yield
-        finally:
-            for variable in magic_variables:
-                self.unregister(variable._Magic__name)
-                object.__setattr__(variable, '_Magic__context', None)
-
-    def _assert_in_registry(self, name):
-        if name not in self._registry:
-            raise UnregisteredMagicNameError(name)
-
-    def get(self, name):
-        self._assert_in_registry(name)
-        if not self._state[name]:
-            raise UnboundMagicError(name)
-        return self._state[name][0]
-
-    def push(self, name, object):
-        self._assert_in_registry(name)
-        self._state[name].insert(0, object)
-
-    def pop(self, name):
-        self._assert_in_registry(name)
-        if not self._state[name]:
-            raise UnboundMagicError(name)
-        return self._state[name].pop(0)
-
-    def register(self, name):
-        if name in self._registry:
-            raise MagicNameConflictError(name)
-        self._registry.append(name)
-        self._state[name] = []
-
-    def unregister(self, name):
-        self._assert_in_registry(name)
-        self._registry.remove(name)
-        del self._state[name]
-
-
-@implements_bool
-class Magic(object):  # pragma: no cover (werkzeug implementation)
-    """
-    Slightly adapted version of Werkzeug's :class:`werkzeug.local.LocalProxy`.
-
-    Original code licensed from the Werkzeug Team under the following terms:
+Original code licensed from the Werkzeug Team under the following terms:
 
     Copyright (c) 2014 by the Werkzeug Team, see AUTHORS for more details.
 
@@ -138,11 +34,17 @@ class Magic(object):  # pragma: no cover (werkzeug implementation)
     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
     OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-    :copyright: Copyright (c) 2014 by the Werkzeug Team
-    :authors: See Werkzeug's AUTHORS file
-    :license: BSD
-    """
+:copyright: Copyright (c) 2014 by the Werkzeug Team
+:authors: See Werkzeug's AUTHORS file
+:license: BSD
+"""
+import copy
 
+from clik.compat import implements_bool, PY2
+
+
+@implements_bool
+class Magic(object):  # pragma: no cover (werkzeug implementation)
     def __init__(self, name):
         object.__setattr__(self, '_Magic__context', None)
         object.__setattr__(self, '_Magic__name', name)
@@ -173,7 +75,7 @@ class Magic(object):  # pragma: no cover (werkzeug implementation)
 
     def __unicode__(self):
         try:
-            return unicode(self._get_current_object())  # noqa
+            return unicode(self._get_current_object())
         except RuntimeError:
             return repr(self)
 

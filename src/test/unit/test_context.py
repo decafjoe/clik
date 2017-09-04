@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Test the :mod:`clik.magic` module.
+Test the :mod:`clik.context` module.
 
 :author: Joe Joyce <joe@decafjoe.com>
 :copyright: Copyright (c) Joe Joyce, 2009-2017.
@@ -8,8 +8,9 @@ Test the :mod:`clik.magic` module.
 """
 import pytest
 
-from clik.magic import Context, Magic, LockedMagicError, \
-    MagicNameConflictError, UnboundMagicError, UnregisteredMagicNameError
+from clik.context import Context, LockedMagicError, MagicNameConflictError, \
+    UnboundMagicError, UnregisteredMagicNameError
+from clik.magic import Magic
 
 
 def test_context():
