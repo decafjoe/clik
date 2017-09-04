@@ -13,18 +13,20 @@ PY2 = sys.version_info[0] == 2
 PY26 = sys.version_info[0:2] == (2, 6)
 PY33 = sys.version_info[0:2] == (3, 3)
 
+# LINT: Ignore undocumented function violations. Compatibility code is not
+#       formally documented.
 
 if PY2:
-    def iteritems(d, *args, **kwargs):
+    def iteritems(d, *args, **kwargs):  # noqa: D103
         return d.iteritems(*args, **kwargs)
 
-    def implements_bool(cls):
+    def implements_bool(cls):  # noqa: D103
         cls.__nonzero__ = cls.__bool__
         del cls.__bool__
         return cls
 else:
-    def iteritems(d, *args, **kwargs):
+    def iteritems(d, *args, **kwargs):  # noqa: D103
         return iter(d.items(*args, **kwargs))
 
-    def implements_bool(cls):
+    def implements_bool(cls):  # noqa: D103
         return cls
