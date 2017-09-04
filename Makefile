@@ -122,7 +122,7 @@ lint : env
 test : lint
 	$(TOOL)/test
 
-test-all : lint
+test-all : env
 	$(TOOL)/test -a
 
 
