@@ -10,7 +10,14 @@ import sys
 
 from clik.argparse import ArgumentParser, ArgumentParserExit
 from clik.command import Command
-from clik.magic import context
+from clik.magic import Context, Magic
+
+
+args = Magic('args')
+current_app = Magic('current_app')
+g = Magic('g')
+parser = Magic('parser')
+run_children = Magic('run_children')
 
 
 def app(fn=None, name=None):
@@ -34,37 +41,27 @@ class AttributeDict(dict):
 
 class App(Command):
     def __init__(self, fn, name=None):
-        super(App, self).__init__(fn, name=name)
+        super(App, self).__init__(Context(), fn, name=name)
 
     def main(self, argv=None, exit=sys.exit):
         if argv is None:  # pragma: no cover (hard to test, obviously correct)
             argv = sys.argv
 
-        context.push('current_app', self)
-        context.push('g', AttributeDict())
-        context.push('args', None)  # Could do a argparse.Namespace here...
-
         description, epilog = self._split_docstring(self._fn)
-        parser = ArgumentParser(
+        root_parser = ArgumentParser(
             prog=self._name,
             description=description,
             epilog=epilog,
         )
-        ec = self._configure_parser(parser)
-        if ec:
-            return exit(ec)
 
-        try:
-            args = parser.parse_args(argv[1:])  # ...and pass it here...
-        except ArgumentParserExit:
-            return exit(1)
-
-        context.pop('args')  # ...and kill this pop/push...
-        context.push('args', args)
-
-        # ...if we wanted to allow modification of the global `args`
-        # during parser configuration. I like that commands can't
-        # mutate args until we know they're being called. But I could
-        # probably be convinced to change that.
-
-        return exit(self._run())
+        with self._ctx.acquire(args, current_app, g, parser, run_children):
+            with self._ctx(current_app=self, g=AttributeDict()):
+                with self._ctx(args=None):
+                    ec = self._configure_parser(root_parser)
+                if ec:
+                    return exit(ec)
+                try:
+                    with self._ctx(args=root_parser.parse_args(argv[1:])):
+                        return exit(self._run())
+                except ArgumentParserExit:
+                    return exit(1)
