@@ -31,7 +31,7 @@ REQUIREMENTS = $(ROOT)/requirements.txt
 ENV_SOURCES = $(SETUP) $(REQUIREMENTS)
 CHANGELOG = $(ROOT)/CHANGELOG.rst
 README = $(ROOT)/README.rst
-SOURCES := $(shell find $(SRC) -name "*.py")
+SOURCES := $(shell find $(SRC)/clik $(SRC)/test/unit -name "*.py")
 LINT_FILES = $(DOC)/conf.py $(TOOL)/marc.py $(TOOL)/test $(SETUP) $(SOURCES)
 UPDATED_ENV = $(ENV)/updated
 
