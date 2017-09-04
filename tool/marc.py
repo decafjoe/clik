@@ -6,15 +6,13 @@ The cram format is great, but after much fooling around with trying to get
 cram working with coverage, I realized I could implement the tiny subset I
 was using in a little tool that integrated coverage. So marc was born.
 
-
 :author: Joe Joyce <joe@decafjoe.com>
-:copyright: Copyright (c) Joe Joyce, 2009-2017.
+:copyright: Copyright (c) Joe Joyce and contributors, 2009-2017.
 :license: BSD
 """
 from __future__ import print_function
 import difflib
 import fnmatch
-import io
 import os
 import re
 import shlex
@@ -27,7 +25,10 @@ except ImportError:
 
 
 class Test(object):
+    """Test case."""
+
     def __init__(self, newlines, start_line, app, argv, invocation):
+        """Initialize test case."""
         self.newlines = newlines
         self.start_line = start_line
         self.app = app
@@ -39,6 +40,7 @@ class Test(object):
         self.actual_exit_code = None
 
     def run(self):
+        """Run test case."""
         exit_rvs = []
 
         def exit(rv):
@@ -65,6 +67,8 @@ class Test(object):
 
 
 class TestFile(object):
+    """Functional test case."""
+
     suffix = '.t'
     invocation_re = re.compile(r'^\$ dummy(?P<argv>.+)?$')
     exit_code_re = re.compile(r'^\[(?P<exit_code>\d+)\]$')
@@ -72,6 +76,13 @@ class TestFile(object):
 
     @classmethod
     def discover(cls, path):
+        """
+        Auto-discover test files within ``path``.
+
+        :param str path: Path to directory or file.
+        :return: :class:`list` of :class:`TestFile` instances for each test
+                 case in ``path``.
+        """
         if os.path.isdir(path):
             rv = []
             for directory, _, filenames in os.walk(path):
@@ -82,6 +93,11 @@ class TestFile(object):
             return [cls(path)]
 
     def __init__(self, path):
+        """
+        Initialize functional test.
+
+        :param str path: Base path to the test.
+        """
         self.path = path
         self.script_path = '%s.py' % self.path[:-len(self.suffix)]
         self.name = path.rsplit('functional', 1)[1][1:-len(self.suffix)]
@@ -89,6 +105,7 @@ class TestFile(object):
         self.result = '?'
 
     def run(self):
+        """Run this test."""
         if os.path.exists(self.script_path):
             with open(self.script_path) as f:
                 g = {}
@@ -165,6 +182,7 @@ class TestFile(object):
 
 
 def main(argv=None, exit=sys.exit):
+    """Entry point for the tool."""
     if argv is None:
         argv = sys.argv
 
@@ -183,7 +201,7 @@ def main(argv=None, exit=sys.exit):
         print('error: no tests discovered for %s' % path, file=sys.stderr)
         exit(1)
     test_files = sorted(test_files, key=lambda tf: tf.name)
-    
+
     for test_file in test_files:
         test_file.run()
         print(test_file.result, end='')

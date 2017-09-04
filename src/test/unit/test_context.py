@@ -3,7 +3,7 @@
 Test the :mod:`clik.context` module.
 
 :author: Joe Joyce <joe@decafjoe.com>
-:copyright: Copyright (c) Joe Joyce, 2009-2017.
+:copyright: Copyright (c) Joe Joyce and contributors, 2009-2017.
 :license: BSD
 """
 import pytest
@@ -14,6 +14,7 @@ from clik.magic import Magic
 
 
 def test_context():
+    """Test all the behavior and corner cases of contexts."""
     context = Context()
     a = Magic('a')
     with context.acquire(a):
