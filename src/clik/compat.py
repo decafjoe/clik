@@ -3,7 +3,7 @@
 Compatibility helpers, inspired by Werkzeug's _compat module.
 
 :author: Joe Joyce <joe@decafjoe.com>
-:copyright: Copyright (c) Joe Joyce, 2009-2017.
+:copyright: Copyright (c) Joe Joyce and contributors, 2009-2017.
 :license: BSD
 """
 import sys
