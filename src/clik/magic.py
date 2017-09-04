@@ -12,6 +12,13 @@ import copy
 from clik.compat import implements_bool, iteritems, PY2
 
 
+class LockedMagicError(Exception):
+    def __init__(self, name):
+        msg = 'The magic variable "%s" is currently locked' % name
+        super(LockedMagicError, self).__init__(msg)
+        self.name = name
+
+
 class MagicNameConflictError(Exception):
     def __init__(self, name):
         msg = 'The magic variable name "%s" is already registered' % name
@@ -48,21 +55,36 @@ class Context(object):
         for key in keys:
             self.pop(key)
 
-    def get(self, name):
+    @contextlib.contextmanager
+    def acquire(self, *magic_variables):
+        for variable in magic_variables:
+            if variable._Magic__context is not None:
+                raise LockedMagicError(variable._Magic__context)
+            self.register(variable._Magic__name)
+            object.__setattr__(variable, '_Magic__context', self)
+        try:
+            yield
+        finally:
+            for variable in magic_variables:
+                self.unregister(variable._Magic__name)
+                object.__setattr__(variable, '_Magic__context', None)
+
+    def _assert_in_registry(self, name):
         if name not in self._registry:
             raise UnregisteredMagicNameError(name)
+
+    def get(self, name):
+        self._assert_in_registry(name)
         if not self._state[name]:
             raise UnboundMagicError(name)
         return self._state[name][0]
 
     def push(self, name, object):
-        if name not in self._registry:
-            raise UnregisteredMagicNameError(name)
+        self._assert_in_registry(name)
         self._state[name].insert(0, object)
 
     def pop(self, name):
-        if name not in self._registry:
-            raise UnregisteredMagicNameError(name)
+        self._assert_in_registry(name)
         if not self._state[name]:
             raise UnboundMagicError(name)
         return self._state[name].pop(0)
@@ -73,8 +95,10 @@ class Context(object):
         self._registry.append(name)
         self._state[name] = []
 
-
-context = Context()
+    def unregister(self, name):
+        self._assert_in_registry(name)
+        self._registry.remove(name)
+        del self._state[name]
 
 
 @implements_bool
@@ -119,10 +143,9 @@ class Magic(object):  # pragma: no cover (werkzeug implementation)
     :license: BSD
     """
 
-    def __init__(self, name, context=context):
-        context.register(name)
+    def __init__(self, name):
+        object.__setattr__(self, '_Magic__context', None)
         object.__setattr__(self, '_Magic__name', name)
-        object.__setattr__(self, '_Magic__context', context)
 
     def _get_current_object(self):
         """Return the current object."""
@@ -239,10 +262,3 @@ class Magic(object):  # pragma: no cover (werkzeug implementation)
     def __copy__(x): return copy.copy(x._get_current_object())
     def __deepcopy__(x, memo):
         return copy.deepcopy(x._get_current_object(), memo)
-
-
-current_app = Magic('current_app')
-parser = Magic('parser')
-args = Magic('args')
-g = Magic('g')
-run_children = Magic('run_children')

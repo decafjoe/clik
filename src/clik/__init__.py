@@ -9,6 +9,5 @@ The command line interface kit.
 __version__ = '0.90.0'
 
 
-from clik.app import app  # noqa: F401
-from clik.command import catch  # noqa: F401
-from clik.magic import args, current_app, g, parser, run_children  # noqa: F401
+from clik.app import app, args, current_app, g, parser, run_children
+from clik.command import catch

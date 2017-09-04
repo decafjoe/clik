@@ -10,10 +10,9 @@ from __future__ import print_function
 import re
 import sys
 
-from clik.magic import args, context
-
 
 catch = object()
+ARGS = 'args'
 STACK = '_clik_stack'
 SHOW_SUBCOMMANDS = 3
 
@@ -28,9 +27,10 @@ class BareAlreadyRegisteredError(Exception):
 
 
 class Command(object):
-    def __init__(self, fn, name=None, alias=None, aliases=None):
+    def __init__(self, ctx, fn, name=None, alias=None, aliases=None):
         self._bare = None
         self._children = []
+        self._ctx = ctx
         self._fn = fn
         self._generator = None
         self._parent = None
@@ -52,12 +52,12 @@ class Command(object):
     def bare(self, fn):
         if self._bare is not None:
             raise BareAlreadyRegisteredError(self)
-        self._bare = Command(fn)
+        self._bare = Command(self._ctx, fn)
         return self._bare
 
     def __call__(self, fn=None, name=None, alias=None, aliases=None):
         def decorate(fn):
-            self._children.append(Command(fn, name, alias, aliases))
+            self._children.append(Command(self._ctx, fn, name, alias, aliases))
             return self._children[-1]
         if fn is None:
             return decorate
@@ -76,7 +76,7 @@ class Command(object):
             self._parent = parent
 
         self._generator = self._fn()
-        with context(parser=parser):
+        with self._ctx(parser=parser):
             ec = next(self._generator)
             if ec:
                 return ec
@@ -85,7 +85,7 @@ class Command(object):
         if self._bare:
             self._bare._generator = self._bare._fn()
             with parser._clik_bare_arguments():
-                with context(parser=parser):
+                with self._ctx(parser=parser):
                     ec = next(self._bare._generator)
                     if ec:
                         return ec
@@ -124,6 +124,7 @@ class Command(object):
         if self._parent is not None:
             parser = self._parent._parser
             if parser._clik_bare_dests is not None:
+                args = self._ctx.get(ARGS)
                 for dest in parser._clik_bare_dests:
                     if getattr(args, dest) != parser.get_default(dest):
                         parser.print_usage(sys.stderr)
@@ -141,7 +142,7 @@ class Command(object):
                     delattr(args, dest)
 
     def _run(self, child=False):
-        stack = getattr(args, STACK)
+        stack = getattr(self._ctx.get(ARGS), STACK)
 
         if not child:
             for command in stack:
@@ -155,7 +156,7 @@ class Command(object):
             def run_children():
                 return stack[0]._run(child=True)
 
-            with context(run_children=run_children):
+            with self._ctx(run_children=run_children):
                 try:
                     ec = next(command._generator)
                 except StopIteration:
