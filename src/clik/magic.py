@@ -38,13 +38,14 @@ Original code licensed from the Werkzeug Team under the following terms:
 :authors: See Werkzeug's AUTHORS file
 :license: BSD
 """
+# flake8: noqa
 import copy
 
 from clik.compat import implements_bool, PY2
 
 
 @implements_bool
-class Magic(object):  # pragma: no cover (werkzeug implementation)
+class Magic(object):  # pragma: no cover
     def __init__(self, name):
         object.__setattr__(self, '_Magic__context', None)
         object.__setattr__(self, '_Magic__name', name)
