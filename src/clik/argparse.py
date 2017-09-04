@@ -162,7 +162,9 @@ class ArgumentParser(argparse.ArgumentParser):
 
 
 if PY33 or PY26:  # pragma: no cover (~copypaste of Python 3.4 implementation)
-    def __call__(self, parser, namespace, values, option_string=None):
+    # LINT: Ignore undocumented function violation. Compatibility code is not
+    #       formally documented.
+    def __call__(self, parser, namespace, values, option_string=None):  # noqa
         parser_name = values[0]
         arg_strings = values[1:]
 
@@ -194,7 +196,9 @@ if PY33 or PY26:  # pragma: no cover (~copypaste of Python 3.4 implementation)
 if PY2:
     original_error = ArgumentParser.error
 
-    def error(self, message=None):
+    # LINT: Ignore undocumented function violation. Compatibility code is not
+    #       formally documented.
+    def error(self, message=None):  # noqa: D103
         if message == 'too few arguments':
             for action in self._actions:  # pragma: no branch (unreachable)
                 if isinstance(action, argparse._SubParsersAction):
@@ -212,7 +216,9 @@ if PY2:
 
     # https://gist.github.com/sampsyo/471779
 
-    class _AliasedSubParsersPseudoAction(argparse.Action):
+    # LINT: Ignore undocumented function violation. Compatibility code is not
+    #       formally documented.
+    class _AliasedSubParsersPseudoAction(argparse.Action):  # noqa: D103
         def __init__(self, name, aliases, help):
             dest = name
             if aliases:
@@ -222,7 +228,9 @@ if PY2:
 
     original_add_parser = argparse._SubParsersAction.add_parser
 
-    def add_parser(self, name, **kwargs):
+    # LINT: Ignore undocumented function violation. Compatibility code is not
+    #       formally documented.
+    def add_parser(self, name, **kwargs):  # noqa: D103
         aliases = kwargs.pop('aliases')
         parser = original_add_parser(self, name, **kwargs)
         for alias in aliases:
