@@ -3,7 +3,7 @@
 Sphinx configuration file for clik.
 
 :author: Joe Joyce <joe@decafjoe.com>
-:copyright: Copyright (c) Joe Joyce, 2009-2017.
+:copyright: Copyright (c) Joe Joyce and contributors, 2009-2017.
 :license: BSD
 """
 import os

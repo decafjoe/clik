@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8
 """
+Test runner for clik.
+
+:author: Joe Joyce <joe@decafjoe.com>
+:copyright: Copyright (c) Joe Joyce and contributors, 2009-2017.
+:license: BSD
 """
 from __future__ import print_function
 import argparse
@@ -11,6 +16,8 @@ import subprocess
 import sys
 
 
+#: Primary interpreter for development environment. Must match
+#: ``PYTHON_VERSION`` in the top-level ``Makefile``.
 DEFAULT_INTERPRETER = 'py36'
 
 
@@ -24,7 +31,7 @@ functional_test_re = re.compile(r'^(?P<n>\d{4})-?(?P<name>[\w-]+)?(\..+)?$')
 
 
 def main(argv=None, exit=sys.exit):
-    """Convenience wrapper for running tests."""
+    """Entry point for the tool."""
     if argv is None:
         argv = sys.argv
 
@@ -127,7 +134,7 @@ def main(argv=None, exit=sys.exit):
         glob += kind if kind else '*'
         selected_envs = fnmatch.filter(envs, glob)
         if len(selected_envs) < 1:
-            pass # TODO: unknown interpreter, error out
+            pass  # noqa: T000 (TODO: unknown interpreter, error out)
         envs_arg = '-e %s' % ','.join(selected_envs)
     if envs_arg:
         envs_arg += ',cover'
