@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-
+Most of the hackery that makes clik tick.
 
 :author: Joe Joyce <joe@decafjoe.com>
-:copyright: Copyright (c) Joe Joyce, 2009-2017.
+:copyright: Copyright (c) Joe Joyce and contributors, 2009-2017.
 :license: BSD
 """
 from __future__ import absolute_import, print_function
@@ -15,33 +15,75 @@ from clik.compat import PY2, PY26, PY33
 
 
 class BareUnsupportedFeatureError(Exception):
+    """Raised when using a feature that is not supported by bare commands."""
+
     def __init__(self, feature):
+        """
+        Initialize the exception.
+
+        :param str feature: Name of the feature that is unsupported.
+        """
         msg = 'Feature is not supported for bare commands: %s' % feature
         super(BareUnsupportedFeatureError, self).__init__(msg)
+
+        #: Feature that is unsupported.
+        #:
+        #: :class:`str`
         self.feature = feature
 
 
 class HelpFormatter(argparse.HelpFormatter):
+    """Format usage with no trailing newline on usage."""
+
     def _format_usage(self, *args, **kwargs):
         parent = super(HelpFormatter, self)
         return parent._format_usage(*args, **kwargs)[:-1]
 
 
 class ArgumentParserExit(Exception):
+    """Raised instead of allowing :mod:`argparse` to call :func:`sys.exit`."""
+
     def __init__(self, code):
+        """
+        Initialize the exception.
+
+        :param int code: Exit code.
+        """
         fmt = 'argument parser exited with return code %i'
         super(ArgumentParserExit, self).__init__(fmt % code)
+
+        #: Exit code.
+        #:
+        #: :class:`int`
         self.code = code
 
 
 class ArgumentParser(argparse.ArgumentParser):
+    """:class:`argparse.ArgumentParser` specialized for clik."""
+
     def __init__(self, *args, **kwargs):
+        """Initialize -- same arguments as :class:`argparse.ArgumentParser`."""
         self._clik_bare_dests_recording = False
         self._clik_bare_dests = None
         kwargs.setdefault('formatter_class', HelpFormatter)
         super(ArgumentParser, self).__init__(*args, **kwargs)
 
     def exit(self, status=0, message=None):
+        """
+        Override default behavior to avoid interpreter exit.
+
+        By default, the parser calls func:`sys.exit`. In certain situations --
+        namely testing -- we don't actually want to exit the Python
+        interpreter.
+
+        So instead of exiting, this throws an :exc:`ArgumentParserExit`
+        exception which can be caught by the caller.
+
+        :param int status: Exit status.
+        :param str message: Optional message. If supplied, will be printed
+                            to :data:`sys.stderr` before raising the exception.
+        :raise: :exc:`ArgumentParserExit`
+        """
         if message:
             print(message, end='', file=sys.stderr)
         raise ArgumentParserExit(status)
@@ -54,6 +96,12 @@ class ArgumentParser(argparse.ArgumentParser):
         self._clik_bare_dests_recording = False
 
     def add_argument(self, *args, **kwargs):
+        """
+        Override default behavior to disallow posargs in bare commands.
+
+        :raise: :class:`BareUnsupportedFeatureError` if adding a positional
+                argument to a bare command.
+        """
         argument = super(ArgumentParser, self).add_argument(*args, **kwargs)
         if self._clik_bare_dests_recording:
             if argument.nargs:
@@ -63,6 +111,12 @@ class ArgumentParser(argparse.ArgumentParser):
         return argument
 
     def add_mutually_exclusive_group(self, *args, **kwargs):
+        """
+        Override default behavior to disallow mutex groups in bare commands.
+
+        :raise: :class:`BareUnsupportedFeatureError` if adding a mutually
+                exclusive group to a bare command.
+        """
         if self._clik_bare_dests_recording:
             raise BareUnsupportedFeatureError('mutually exclusive groups')
         s = super(ArgumentParser, self)
@@ -89,9 +143,11 @@ class ArgumentParser(argparse.ArgumentParser):
         return formatter
 
     def format_usage(self):
+        """Override default behavior to use clik's formatter."""
         return self._clik_format_usage(self._get_formatter()).format_help()
 
     def format_help(self):
+        """Override default behavior to support formatting bare commands."""
         formatter = self._get_formatter()
         self._clik_format_usage(formatter)
         formatter.add_text('\n')
