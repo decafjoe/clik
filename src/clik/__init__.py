@@ -15,5 +15,7 @@ modules within clik.
 __version__ = '0.90.0'
 
 
+# LINT: Ignore unused import violations. This module isn't meant to "do"
+#       anything, just to make clik's API available to the end user.
 from clik.app import app, args, current_app, g, parser, run_children  # noqa
 from clik.command import catch  # noqa: F401
