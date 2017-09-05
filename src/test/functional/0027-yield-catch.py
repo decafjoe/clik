@@ -5,7 +5,7 @@ from clik import app, catch
 def dummy():
     yield
     print('running setup code')
-    child_exit_codes, exception = (yield catch)
+    child_exit_code, exception = (yield catch)
     print('exception:', exception)
     print('running tear down code')
 
