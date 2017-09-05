@@ -120,7 +120,7 @@ lint : env
 	@$(FLAKE8) --ignore=D203 $(LINT_FILES)
 	@printf "Flake8 is happy :)\n"
 
-test : lint
+test : env
 	$(TOOL)/test
 
 test-all : env
