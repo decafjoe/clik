@@ -165,7 +165,7 @@ class Command(object):
             def mysubcommand():
                 yield
 
-        :param fn: Generator function or ``None``. If ``fn`` is specified,
+        :param fn: Generator function or ``None``. If ``fn`` is supplied,
                    all other arguments are ignored.
         :param str name: Name of the command or ``None``.
         :param str alias: Command alias. See :meth:`__init__` for information

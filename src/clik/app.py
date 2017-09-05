@@ -99,7 +99,7 @@ class App(Command):
 
         :param fn: Main application generator function.
         :param name: Optional :class:`str` specifying the application name.
-                     If not specified the application name is set to
+                     If not supplied the application name is set to
                      ``fn.__name__``.
         """
         super(App, self).__init__(Context(), fn, name=name)
@@ -108,9 +108,9 @@ class App(Command):
         """
         Start the application.
 
-        :param argv: Optional list of command-line arguments. If not specified,
+        :param argv: Optional list of command-line arguments. If not supplied,
                      this defaults to ``sys.argv``.
-        :param exit: Optional function to call on exit. If not specified,
+        :param exit: Optional function to call on exit. If not supplied,
                      this defaults to :func:`sys.exit`.
         :type exit: ``fn(integer_exit_code)``
         :return: Return value of ``exit``
