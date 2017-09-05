@@ -72,6 +72,7 @@ help :
 	@printf "  release       Cut a release of the software\n"
 	@printf "  test          Run tests against $(PYTHON_VERSION)\n"
 	@printf "  test-all      Run tests in all supported versions\n"
+	@printf "\n"
 
 
 # =============================================================================
