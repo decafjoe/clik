@@ -14,10 +14,29 @@ from clik.context import Context
 from clik.magic import Magic
 
 
+#: Magic variable containing parsed arguments.
+#:
+#: :type: :class:`clik.magic.Magic` -- :class:`argparse.Namespace`
 args = Magic('args')
+
+#: Magic variable containing the active application instance.
+#:
+#: :type: :class:`clik.magic.Magic` -- :class:`clik.app.App`
 current_app = Magic('current_app')
+
+#: Magic variable containing globals.
+#:
+#: :type: :class:`clik.magic.Magic` -- :class:`clik.app.AttributeDict`
 g = Magic('g')
+
+#: Magic variable containing the current parser.
+#:
+#: :type: :class:`clik.magic.Magic` -- :class:`clik.argparse.ArgumentParser`
 parser = Magic('parser')
+
+#: Magic variable containing the function to run child commands.
+#:
+#: :type: :class:`clik.magic.Magic`
 run_children = Magic('run_children')
 
 
@@ -44,7 +63,7 @@ def app(fn=None, name=None):
                will be set to ``fn.__name__``.
     :param name: Overrides name of application. Must not be used with the
                  ``fn`` argument (if used with ``fn``, ``name`` is ignored).
-    :return: :class:`App` if ``fn`` is data:`None`, otherwise decorator
+    :return: :class:`App` if ``fn`` is ``None``, otherwise a decorator
              returning :class:`App`.
     """
     def decorate(fn):

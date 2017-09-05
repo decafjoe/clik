@@ -22,6 +22,10 @@ class LockedMagicError(Exception):
         """
         msg = 'The magic variable "%s" is currently locked' % name
         super(LockedMagicError, self).__init__(msg)
+
+        #: Name of the magic variable that is locked.
+        #:
+        #: :type: :class:`str`
         self.name = name
 
 
@@ -36,6 +40,10 @@ class MagicNameConflictError(Exception):
         """
         msg = 'The magic variable name "%s" is already registered' % name
         super(MagicNameConflictError, self).__init__(msg)
+
+        #: Name of the magic variable that is already registered.
+        #:
+        #: :type: :class:`str`
         self.name = name
 
 
@@ -51,6 +59,10 @@ class UnregisteredMagicNameError(Exception):
         """
         msg = 'The magic variable "%s" is not registered' % name
         super(UnregisteredMagicNameError, self).__init__(msg)
+
+        #: Name of the magic variable that is unregistered.
+        #:
+        #: :type: :class:`str`
         self.name = name
 
 
@@ -66,6 +78,10 @@ class UnboundMagicError(Exception):
         """
         msg = 'The magic variable "%s" is not bound' % name
         super(UnboundMagicError, self).__init__(msg)
+
+        #: Name of the magic variable that is unbound.
+        #:
+        #: :type: :class:`str`
         self.name = name
 
 

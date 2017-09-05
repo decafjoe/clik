@@ -9,8 +9,19 @@ Compatibility helpers, inspired by Werkzeug's _compat module.
 import sys
 
 
+#: Indicates whether we are on Python 2.
+#:
+#: :type: :class:`bool`
 PY2 = sys.version_info[0] == 2
+
+#: Indicates whether we are on Python 2.6.
+#:
+#: :type: :class:`bool`
 PY26 = sys.version_info[0:2] == (2, 6)
+
+#: Indicates whether we are on Python 3.3.
+#:
+#: :type: :class:`bool`
 PY33 = sys.version_info[0:2] == (3, 3)
 
 # LINT: Ignore undocumented function violations. Compatibility code is not

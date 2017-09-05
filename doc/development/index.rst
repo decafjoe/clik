@@ -8,4 +8,5 @@
 
    quickstart
    workflow
+   internals
    changelog

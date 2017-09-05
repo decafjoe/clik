@@ -14,32 +14,6 @@ import sys
 from clik.compat import PY2, PY26, PY33
 
 
-class BareUnsupportedFeatureError(Exception):
-    """Raised when using a feature that is not supported by bare commands."""
-
-    def __init__(self, feature):
-        """
-        Initialize the exception.
-
-        :param str feature: Name of the feature that is unsupported.
-        """
-        msg = 'Feature is not supported for bare commands: %s' % feature
-        super(BareUnsupportedFeatureError, self).__init__(msg)
-
-        #: Feature that is unsupported.
-        #:
-        #: :class:`str`
-        self.feature = feature
-
-
-class HelpFormatter(argparse.HelpFormatter):
-    """Format usage with no trailing newline on usage."""
-
-    def _format_usage(self, *args, **kwargs):
-        parent = super(HelpFormatter, self)
-        return parent._format_usage(*args, **kwargs)[:-1]
-
-
 class ArgumentParserExit(Exception):
     """Raised instead of allowing :mod:`argparse` to call :func:`sys.exit`."""
 
@@ -54,8 +28,34 @@ class ArgumentParserExit(Exception):
 
         #: Exit code.
         #:
-        #: :class:`int`
+        #: :type: :class:`int`
         self.code = code
+
+
+class BareUnsupportedFeatureError(Exception):
+    """Raised when using a feature that is not supported by bare commands."""
+
+    def __init__(self, feature):
+        """
+        Initialize the exception.
+
+        :param str feature: Name of the feature that is unsupported.
+        """
+        msg = 'Feature is not supported for bare commands: %s' % feature
+        super(BareUnsupportedFeatureError, self).__init__(msg)
+
+        #: Feature that is unsupported.
+        #:
+        #: :type: :class:`str`
+        self.feature = feature
+
+
+class HelpFormatter(argparse.HelpFormatter):
+    """Format usage with no trailing newline on usage."""
+
+    def _format_usage(self, *args, **kwargs):
+        parent = super(HelpFormatter, self)
+        return parent._format_usage(*args, **kwargs)[:-1]
 
 
 class ArgumentParser(argparse.ArgumentParser):
@@ -63,7 +63,7 @@ class ArgumentParser(argparse.ArgumentParser):
 
     def __init__(self, *args, **kwargs):
         """Initialize -- same arguments as :class:`argparse.ArgumentParser`."""
-        self._clik_bare_dests_recording = False
+        self._clik_bare_command_mode = False
         self._clik_bare_dests = None
         kwargs.setdefault('formatter_class', HelpFormatter)
         super(ArgumentParser, self).__init__(*args, **kwargs)
@@ -72,7 +72,7 @@ class ArgumentParser(argparse.ArgumentParser):
         """
         Override default behavior to avoid interpreter exit.
 
-        By default, the parser calls func:`sys.exit`. In certain situations --
+        By default, the parser calls :func:`sys.exit`. In certain situations --
         namely testing -- we don't actually want to exit the Python
         interpreter.
 
@@ -90,10 +90,18 @@ class ArgumentParser(argparse.ArgumentParser):
 
     @contextlib.contextmanager
     def _clik_bare_arguments(self):
+        """
+        Context manager for bare command mode.
+
+        When the parser is in bare command mode, it disallows certain features
+        (like positional args and mutually exclusive groups). In addition, the
+        argument destinations are recorded in order to do some post-processing
+        before running the selected command.
+        """
         self._clik_bare_dests = []
-        self._clik_bare_dests_recording = True
+        self._clik_bare_command_mode = True
         yield
-        self._clik_bare_dests_recording = False
+        self._clik_bare_command_mode = False
 
     def add_argument(self, *args, **kwargs):
         """
@@ -103,7 +111,7 @@ class ArgumentParser(argparse.ArgumentParser):
                 argument to a bare command.
         """
         argument = super(ArgumentParser, self).add_argument(*args, **kwargs)
-        if self._clik_bare_dests_recording:
+        if self._clik_bare_command_mode:
             if argument.nargs:
                 msg = 'positional arguments (dest: %s)' % argument.dest
                 raise BareUnsupportedFeatureError(msg)
@@ -117,7 +125,7 @@ class ArgumentParser(argparse.ArgumentParser):
         :raise: :class:`BareUnsupportedFeatureError` if adding a mutually
                 exclusive group to a bare command.
         """
-        if self._clik_bare_dests_recording:
+        if self._clik_bare_command_mode:
             raise BareUnsupportedFeatureError('mutually exclusive groups')
         s = super(ArgumentParser, self)
         return s.add_mutually_exclusive_group(*args, **kwargs)
