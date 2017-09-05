@@ -153,7 +153,7 @@ dist : $(DIST)
 
 release :
 	$(TOOL)/pre-release
-	cd $(ROOT); make test-all clean dist
+	cd $(ROOT); make clean dist
 	$(TWINE) upload $(DIST)
 	$(TOOL)/post-release $(VERSION)
 
