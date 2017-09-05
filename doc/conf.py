@@ -123,6 +123,7 @@ texinfo_show_urls = 'footnote'
 
 intersphinx_mapping = {
     'https://docs.python.org/': None,
+    'http://werkzeug.pocoo.org/docs/0.12/': None,
 }
 
 

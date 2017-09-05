@@ -29,7 +29,7 @@ ARGS = 'args'
 STACK = '_clik_stack'
 
 #: If a parent has more than this number of subcommands, the help output will
-#: ``{command}`` instead of the full list of commands.
+#: ``{command}`` instead of the full list of subcommands.
 #:
 #: :type: :class:`int`
 SHOW_SUBCOMMANDS = 3
@@ -47,6 +47,10 @@ class BareAlreadyRegisteredError(Exception):
         """
         fmt = 'Bare command already registered for command "%s"'
         super(BareAlreadyRegisteredError, self).__init__(fmt % command._name)
+
+        #: Command caller was trying to register as the bare command.
+        #:
+        #: :type: :class:`Command`
         self.command = command
 
 

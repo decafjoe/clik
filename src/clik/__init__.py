@@ -12,6 +12,9 @@ modules within clik.
 :copyright: Copyright (c) Joe Joyce and contributors, 2009-2017.
 :license: BSD
 """
+#: Current version.
+#:
+#: :type: :class:`str`
 __version__ = '0.90.0'
 
 
