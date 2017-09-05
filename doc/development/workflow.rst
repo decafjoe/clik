@@ -25,13 +25,19 @@ is, every commit must:
 
 Once the patch is working, **history must be rewritten to read
 logically, and must be rebased off of the current master.** Again,
-this should be done off-master. Remember rule #1: all commits to
-master must be stable, working, QA-ed code.
+this should be done off-master. Group changes logically. Tiny commits
+are perfectly fine. Remember rule #1: all commits to master must be
+stable, working, QA-ed code.
 
-With the patch and history ready, **submit a pull request**. This will
-automatically start a Travis CI run to check for linter violations or
-test failures. If the test run passes, a clik committer will review
-your changes for a possible merge into master.
+With the patch and history ready, **submit a pull request**. The pull
+request must provide a general description of the change and the
+rationale for why clik needs the code. Commit messages are the "what",
+pull request messages are the "why".
+
+Submitting a pull request will automatically start a Travis CI run to
+check for linter violations or test failures. If the test run passes,
+a clik committer will review your changes for a possible merge into
+master.
 
 .. note::
 
