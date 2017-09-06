@@ -9,7 +9,7 @@ Prerequisites
 
 Requirements:
 
-* Common build tools like git, make, a C compiler, etc
+* Common development tools like git, make, a C compiler, etc
 * Python 3.6 -- this is the "main" interpreter used for development
 * Virtualenv
 
@@ -23,8 +23,8 @@ Recommendations:
   * Python 3.4
   * Python 3.5
   * Python 3.6
-  * Pypy
-  * Pypy 3
+  * PyPy
+  * PyPy 3
 
 Suggestions:
 
@@ -34,13 +34,13 @@ Suggestions:
 Setup
 =====
 
-The following instructions clone the repository to ``~/clik``. On your
-machine, you may clone it wherever you like. It can always be deleted
-with a simple ``rm -rf``.
+The repository can be cloned anywhere you like on your local machine.
+At any time, you can delete the entire project and its environment by
+``rm -rf`` -ing the local directory.
 
 .. highlight:: bash
 
-::
+The following instructions clone the repository to ``~/clik``::
 
    cd
    git clone https://github.com/decafjoe/clik.git
@@ -49,26 +49,25 @@ with a simple ``rm -rf``.
 
 Wait ~10m and you should be good to go!
 
-Note that the environment is installed entirely local to the
-repository. You can delete the entire environment at any time by ``rm
--rf`` -ing the repo directory.
+Note that all dependencies are installed underneath the repository
+directory (take a peek at ``.env/``). To delete the development
+environment, you can run ``make pristine`` (see below) or simply ``rm
+-rf`` the entire directory.
 
 
 Tooling
 =======
 
 Clik's developer tooling is exposed via ``make``. Run ``make`` with no
-targets to get a help message describing the available targets. All
-targets except ``make release`` are idempotent, so they can be run at
-any time.
+arguments to get a list of available targets. All targets except
+``make release`` are idempotent, so they can be run at any time.
 
 Environment:
 
 * ``make env`` installs the development environment; subsequent runs
   update the environment if required
 * ``make clean`` deletes build artifacts like .pyc files, sdists, etc
-* ``make pristine`` restores the repo directory to the state it was in
-  when originally checked out
+* ``make pristine`` kills the local development environment
 * ``make check-update`` checks for updates to Python packages
   installed in the development environment
 
