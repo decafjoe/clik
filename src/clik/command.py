@@ -67,10 +67,10 @@ class Command(object):
         Initialize the command object.
 
         :param ctx: Context object.
-        :type ctx: :class:`clik.magic.Context`
+        :type ctx: :class:`clik.context.Context`
         :param fn: Generator function -- the actual command.
         :param str name: Name of the command or ``None``. If ``None``, name
-                         will be ``fn.__name``.
+                         will be ``fn.__name__``.
         :param str alias: Command alias or ``None``. If ``None``, the command
                           has no aliases. If this and ``aliases`` are both
                           supplied, ``alias`` will be prepended to the
@@ -97,7 +97,7 @@ class Command(object):
         #: Context object for this command. This context is shared between all
         #: command instances associated with a :class:`clik.app.App`.
         #:
-        #: :type: :class:`clik.magic.Context`
+        #: :type: :class:`clik.context.Context`
         self._ctx = ctx
 
         #: Generator function -- the actual command.
@@ -119,7 +119,7 @@ class Command(object):
         #: Parent command. For the root :class:`clik.app.App` instance, this
         #: is ``None``. Set in :meth:`_configure_parser`.
         #:
-        #: :type: class:`Command` or ``None``
+        #: :type: :class:`Command` or ``None``
         self._parent = None
 
         #: Parser for this command. Set in :meth:`_configure_parser`.
