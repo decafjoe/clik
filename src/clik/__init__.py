@@ -15,7 +15,7 @@ modules within clik.
 #: Current version.
 #:
 #: :type: :class:`str`
-__version__ = '0.90.1'
+__version__ = '0.90.2'
 
 
 # LINT: Ignore unused import violations. This module isn't meant to "do"
