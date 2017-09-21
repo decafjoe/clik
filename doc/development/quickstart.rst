@@ -51,8 +51,8 @@ Wait ~10m and you should be good to go!
 
 Note that all dependencies are installed underneath the repository
 directory (take a peek at ``.env/``). To delete the development
-environment, you can run ``make pristine`` (see below) or simply ``rm
--rf`` the entire directory.
+environment artifacts, you can run ``make pristine`` (see below). To
+delete everything, simply ``rm -rf`` the clone.
 
 
 Tooling
