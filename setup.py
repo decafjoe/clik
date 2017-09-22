@@ -6,6 +6,7 @@ Package configuration for clik.
 :copyright: Copyright (c) Joe Joyce and contributors, 2009-2017.
 :license: BSD
 """
+import os
 import sys
 
 from setuptools import find_packages, setup
@@ -18,10 +19,14 @@ requires = ()
 if sys.version_info[0] == 2 and sys.version_info[1] == 6:
     requires = ('argparse',)
 
+url = 'https://%s.readthedocs.io' % name
 description = 'A tool for writing complex command-line interfaces with ' \
               'minimal boilerplate and bookkeeping.'
-long_description = 'Please see the official project page at ' \
-                   'http://clik.readthedocs.io.'
+long_description = 'Please see the official project page at %s' % url
+
+root_dir = os.path.abspath(os.path.dirname(__file__))
+src_dir = os.path.join(root_dir, 'src')
+packages = find_packages(src_dir, include=[name])
 
 
 setup(
@@ -48,8 +53,8 @@ setup(
     long_description=long_description,
     name=name,
     package_dir={'': 'src'},
-    packages=find_packages('src'),
-    url='http://%s.readthedocs.io' % name,
+    packages=packages,
+    url=url,
     version=version,
     zip_safe=False,
 )
