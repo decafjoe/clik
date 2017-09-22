@@ -32,7 +32,6 @@ REQUIREMENTS = $(ROOT)/req
 ENV_REQUIREMENTS = $(REQUIREMENTS)/env.txt
 LINT_REQUIREMENTS = $(REQUIREMENTS)/lint.txt
 ENV_SOURCES = $(SETUP) $(ENV_REQUIREMENTS) $(LINT_REQUIREMENTS)
-CHANGELOG = $(ROOT)/CHANGELOG.rst
 README = $(ROOT)/README.rst
 SOURCES := $(shell find $(SRC)/clik $(SRC)/test/unit -name "*.py")
 LINT_FILES = $(DOC)/conf.py $(TOOL)/marc.py $(TOOL)/test $(SETUP) $(SOURCES)
@@ -47,7 +46,7 @@ TOX = $(ENV)/bin/tox
 TWINE = $(ENV)/bin/twine
 
 # Distribution
-VERSION = $(shell python $(ROOT)/setup.py --version)
+VERSION = $(shell $(PYTHON) $(ROOT)/setup.py --version)
 DIST = $(ROOT)/dist/$(PROJECT)-$(VERSION).tar.gz
 
 # Python package settings
@@ -62,7 +61,8 @@ PRE_PUSH_HOOK = $(TOOL)/pre-push
 
 
 help :
-	@printf "usage: make <target> where target is one of:\n\n"
+	@printf "usage: make <target> where target is one of:\n"
+	@printf "\n"
 	@printf "  check-update  Check for updates to dependencies\n"
 	@printf "  clean         Delete build artifacts (dists, .pyc, etc)\n"
 	@printf "  docs          Generate PDF and HTML documentation\n"
@@ -149,15 +149,15 @@ docs: html pdf
 # =============================================================================
 
 $(DIST) : $(README) $(SOURCES) $(UPDATED_ENV)
-	mv $(README) README
+	cp $(README) $(ROOT)/README
 	-cd $(ROOT) && $(PYTHON) setup.py sdist && touch $(DIST)
-	mv README $(README)
+	rm $(ROOT)/README
 
 dist : $(DIST)
 
 release :
 	$(TOOL)/pre-release
-	cd $(ROOT); make clean dist
+	make -C $(ROOT) clean dist
 	$(TWINE) upload $(DIST)
 	$(TOOL)/post-release $(VERSION)
 
