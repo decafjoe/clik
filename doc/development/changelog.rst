@@ -4,6 +4,14 @@
 ===========
 
 
+0.90.2 -- 2017-10-12
+====================
+
+* Calling ``run_children()`` when there are no children no longer
+  raises an exception; it simply returns 0 (i.e. no error in the
+  children).
+
+
 0.90.1 -- 2017-09-06
 ====================
 
