@@ -297,9 +297,13 @@ class Command(object):
                 except StopIteration:
                     pass
         else:
-            try:
-                ec = next(command._generator)
-            except StopIteration:
-                ec = 0
+            def run_children():
+                return 0
+
+            with self._ctx(run_children=run_children):
+                try:
+                    ec = next(command._generator)
+                except StopIteration:
+                    ec = 0
 
         return ec
