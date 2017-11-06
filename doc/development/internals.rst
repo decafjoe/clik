@@ -16,7 +16,7 @@ clik.app
 ========
 
 .. automodule:: clik.app
-   :members: current_app, parser, args, g, run_children
+   :members: current_app, parser, args, g, run_children, unknown_args
 .. autofunction:: clik.app.app
 .. autoclass:: clik.app.AttributeDict
    :show-inheritance:
@@ -30,6 +30,7 @@ clik.argparse
 =============
 
 .. automodule:: clik.argparse
+   :members: ALLOW_UNKNOWN
 .. autoexception:: clik.argparse.ArgumentParserExit
    :members:
 .. autoexception:: clik.argparse.BareUnsupportedFeatureError
