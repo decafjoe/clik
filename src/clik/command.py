@@ -186,6 +186,7 @@ class Command(object):
 
     def _configure_parser(self, parser, parent=None, stack=None):
         self._parser = parser
+        parser._clik_command = self
 
         if stack is None:
             stack = []
