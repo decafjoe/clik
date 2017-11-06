@@ -8,7 +8,7 @@ Top-level :class:`App` class and helpers.
 """
 import sys
 
-from clik.argparse import ArgumentParser, ArgumentParserExit
+from clik.argparse import ALLOW_UNKNOWN, ArgumentParser, ArgumentParserExit
 from clik.command import Command
 from clik.context import Context
 from clik.magic import Magic
@@ -38,6 +38,11 @@ parser = Magic('parser')
 #:
 #: :type: :class:`clik.magic.Magic`
 run_children = Magic('run_children')
+
+#: Magic variable containing unknown arguments.
+#:
+#: :type: :class:`clik.magic.Magic` -- :class:`list`
+unknown_args = Magic('unknown_args')
 
 
 def app(fn=None, name=None):
@@ -143,15 +148,23 @@ class App(Command):
             description=description,
             epilog=epilog,
         )
+        root_parser.set_defaults(**{ALLOW_UNKNOWN: False})
 
-        with self._ctx.acquire(args, current_app, g, parser, run_children):
+        magics = (args, current_app, g, parser, run_children, unknown_args)
+        with self._ctx.acquire(*magics):
             with self._ctx(current_app=self, g=AttributeDict()):
                 with self._ctx(args=None):
                     ec = self._configure_parser(root_parser)
                 if ec:
                     return exit(ec)
                 try:
-                    with self._ctx(args=root_parser.parse_args(argv[1:])):
-                        return exit(self._run())
+                    known, unknown = root_parser.parse_known_args(argv[1:])
                 except ArgumentParserExit:
                     return exit(1)
+                if unknown and not getattr(known, ALLOW_UNKNOWN):
+                    try:
+                        root_parser.parse_args(argv[1:])
+                    except ArgumentParserExit:
+                        return exit(1)
+                with self._ctx(args=known, unknown_args=unknown):
+                    return exit(self._run())

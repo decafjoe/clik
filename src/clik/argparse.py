@@ -14,6 +14,13 @@ import sys
 from clik.compat import PY2, PY26, PY33
 
 
+#: Name of the argument that contains whether to allow unknown
+#: arguments.
+#:
+#: :type: :class:`str`
+ALLOW_UNKNOWN = '_clik_unknown'
+
+
 class ArgumentParserExit(Exception):
     """Raised instead of allowing :mod:`argparse` to call :func:`sys.exit`."""
 
@@ -50,6 +57,15 @@ class BareUnsupportedFeatureError(Exception):
         self.feature = feature
 
 
+class UnknownArgsUnsupportedError(Exception):
+    """Raised when trying to allow unknown args on a command with children."""
+
+    def __init__(self):
+        """Initialize the exception."""
+        msg = 'Unknown args are not allowed for commands with subcommands'
+        super(UnknownArgsUnsupportedError, self).__init__(msg)
+
+
 class HelpFormatter(argparse.HelpFormatter):
     """Format usage with no trailing newline on usage."""
 
@@ -65,6 +81,7 @@ class ArgumentParser(argparse.ArgumentParser):
         """Initialize -- same arguments as :class:`argparse.ArgumentParser`."""
         self._clik_bare_command_mode = False
         self._clik_bare_dests = None
+        self._clik_command = None
         kwargs.setdefault('formatter_class', HelpFormatter)
         super(ArgumentParser, self).__init__(*args, **kwargs)
 
@@ -129,6 +146,18 @@ class ArgumentParser(argparse.ArgumentParser):
             raise BareUnsupportedFeatureError('mutually exclusive groups')
         s = super(ArgumentParser, self)
         return s.add_mutually_exclusive_group(*args, **kwargs)
+
+    def allow_unknown_args(self):
+        """
+        Allow unknown arguments, putting them in ``clik.unknown_args``.
+
+        :raise: :exc:`UnknownArgsUnsupportedError` if this parser has
+                subparsers -- unknown arguments are allowed *only* on
+                leaf commands.
+        """
+        if self._clik_command._children:
+            raise UnknownArgsUnsupportedError
+        self.set_defaults(**{ALLOW_UNKNOWN: True})
 
     def _clik_format_usage(self, formatter):
         bare_dests = self._clik_bare_dests
