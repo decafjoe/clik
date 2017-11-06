@@ -13,7 +13,7 @@ from setuptools import find_packages, setup
 
 
 name = 'clik'
-version = '0.91.0'
+version = '0.91.1'
 
 requires = ()
 if sys.version_info[0] == 2 and sys.version_info[1] == 6:
