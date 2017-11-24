@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Test the :mod:`clik.app` module.
+Test the :mod:`clik.util` module.
 
 :author: Joe Joyce <joe@decafjoe.com>
 :copyright: Copyright (c) Joe Joyce and contributors, 2009-2017.
@@ -8,7 +8,7 @@ Test the :mod:`clik.app` module.
 """
 import pytest
 
-from clik.app import AttributeDict
+from clik.util import AttributeDict
 
 
 def test_attribute_dict():
