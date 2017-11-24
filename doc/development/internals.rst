@@ -18,9 +18,6 @@ clik.app
 .. automodule:: clik.app
    :members: current_app, parser, args, g, run_children, unknown_args
 .. autofunction:: clik.app.app
-.. autoclass:: clik.app.AttributeDict
-   :show-inheritance:
-   :members: __getattr__, __setattr__, __delattr__
 .. autoclass:: clik.app.App
    :show-inheritance:
    :members:
@@ -97,3 +94,12 @@ clik.magic
 
 .. automodule:: clik.magic
 .. autoclass:: clik.magic.Magic
+
+
+clik.util
+=========
+
+.. automodule:: clik.util
+.. autoclass:: clik.util.AttributeDict
+   :show-inheritance:
+   :members: __getattr__, __setattr__, __delattr__
