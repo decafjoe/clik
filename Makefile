@@ -168,4 +168,5 @@ clean :
 		$(shell find $(SRC) -type f -name *.pyc) \
 		.tox/coverage* \
 		coverage \
-		dist
+		dist \
+		doc/_build
