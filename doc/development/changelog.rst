@@ -4,6 +4,13 @@
 ===========
 
 
+0.92.2 -- 2017-12-19
+====================
+
+* Added introductory documentation: example code, tutorial, and
+  screencast.
+
+
 0.92.1 -- 2017-11-28
 ====================
 
