@@ -9,7 +9,7 @@ This top-level package pulls together the end user API from the various
 modules within clik.
 
 :author: Joe Joyce <joe@decafjoe.com>
-:copyright: Copyright (c) Joe Joyce and contributors, 2009-2017.
+:copyright: Copyright (c) Joe Joyce and contributors, 2009-2018.
 :license: BSD
 """
 #: Current version.

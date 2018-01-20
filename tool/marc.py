@@ -7,7 +7,7 @@ cram working with coverage, I realized I could implement the tiny subset I
 was using in a little tool that integrated coverage. So marc was born.
 
 :author: Joe Joyce <joe@decafjoe.com>
-:copyright: Copyright (c) Joe Joyce and contributors, 2009-2017.
+:copyright: Copyright (c) Joe Joyce and contributors, 2009-2018.
 :license: BSD
 """
 from __future__ import print_function

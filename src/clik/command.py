@@ -3,7 +3,7 @@
 All the recursive, argument-parsin', context-managin' goodness.
 
 :author: Joe Joyce <joe@decafjoe.com>
-:copyright: Copyright (c) Joe Joyce and contributors, 2009-2017.
+:copyright: Copyright (c) Joe Joyce and contributors, 2009-2018.
 :license: BSD
 """
 from __future__ import print_function

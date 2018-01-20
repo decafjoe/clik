@@ -1,7 +1,7 @@
 #
 # Makefile for the clik project.
 #
-# Copyright Joe Joyce and contributors, 2009-2017.
+# Copyright Joe Joyce and contributors, 2009-2018.
 # See LICENSE for licensing information.
 #
 
