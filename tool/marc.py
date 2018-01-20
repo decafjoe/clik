@@ -11,6 +11,7 @@ was using in a little tool that integrated coverage. So marc was born.
 :license: BSD
 """
 from __future__ import print_function
+
 import difflib
 import fnmatch
 import os

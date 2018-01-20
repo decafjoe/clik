@@ -7,6 +7,7 @@ Most of the hackery that makes clik tick.
 :license: BSD
 """
 from __future__ import absolute_import, print_function
+
 import argparse
 import contextlib
 import sys

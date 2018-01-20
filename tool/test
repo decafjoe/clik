@@ -8,6 +8,7 @@ Test runner for clik.
 :license: BSD
 """
 from __future__ import print_function
+
 import argparse
 import fnmatch
 import os
