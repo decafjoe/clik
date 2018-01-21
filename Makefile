@@ -35,7 +35,7 @@ TEST_REQUIREMENTS = $(REQUIREMENTS)/test.txt
 ENV_SOURCES = $(SETUP) $(ENV_REQUIREMENTS) $(LINT_REQUIREMENTS) \
 	$(TEST_REQUIREMENTS)
 README = $(ROOT)/README.rst
-SOURCES := $(shell find $(SRC)/clik $(SRC)/test/unit -name "*.py")
+SOURCES := $(shell find $(SRC)/$(PROJECT) $(SRC)/test/unit -name "*.py")
 LINT_FILES = $(DOC)/conf.py $(TOOL)/marc.py $(TOOL)/test $(SETUP) $(SOURCES)
 UPDATED_ENV = $(ENV)/updated
 
