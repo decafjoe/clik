@@ -4,6 +4,14 @@
 ===========
 
 
+0.92.3 -- unreleased
+====================
+
+* Fixed logic bug that, when an end user is running Python 2.7 and
+  does not supply a required positional argument, causes an exception
+  within clik instead of printing an error message.
+
+
 0.92.2 -- 2017-12-19
 ====================
 

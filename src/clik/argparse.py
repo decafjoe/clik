@@ -238,15 +238,21 @@ if PY2:
     #       formally documented.
     def error(self, message=None):  # noqa: D103
         if message == 'too few arguments':
-            for action in self._actions:  # pragma: no branch (unreachable)
+            for action in self._actions:
                 if isinstance(action, argparse._SubParsersAction):
+                    name = action.metavar
                     break
-            else:  # pragma: no cover (unreachable)
-                raise Exception('this code should be unreachable')
+            else:
+                for action in self._positionals._actions:  # pragma: no branch
+                    if action.required:
+                        name = action.dest
+                        break
+                else:  # pragma: no cover (unreachable)
+                    raise Exception('this code should be unreachable')
             if action.required:
                 self.print_usage(sys.stderr)
                 fmt = '%s: error: the following arguments are required: %s\n'
-                return self.exit(2, fmt % (self.prog, action.metavar))
+                return self.exit(2, fmt % (self.prog, name))
         else:
             return original_error(self, message)
 
