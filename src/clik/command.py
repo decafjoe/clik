@@ -141,6 +141,8 @@ class Command(object):
             aliases.insert(0, alias)
         self._aliases = tuple(aliases)
 
+        self.__doc__ = fn.__doc__
+
     def bare(self, fn):
         """
         Register a bare command.
