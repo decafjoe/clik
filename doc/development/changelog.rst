@@ -3,8 +3,15 @@
  Changelog
 ===========
 
+0.92.4 -- unreleased
+====================
 
-0.92.3 -- unreleased
+* The ``__doc__`` attribute of ``Command`` instances were changed to
+  be the decorated function's ``__doc__`` rather than the generic
+  ``Command`` docstring.
+
+
+0.92.3 -- 2018-11-01
 ====================
 
 * Fixed logic bug that, when an end user is running Python 2.7 and

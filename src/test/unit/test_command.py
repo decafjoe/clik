@@ -12,6 +12,16 @@ from clik import app
 from clik.command import BareAlreadyRegisteredError
 
 
+def test_docstring():
+    """Test that the command instance gets the docstring of the function."""
+    @app
+    def dummy():
+        """Test the docstring."""
+        yield
+
+    assert dummy.__doc__ == 'Test the docstring.'
+
+
 def test_bare_already_registered_error():
     """Test that registering two bare commands raises an exception."""
     @app
