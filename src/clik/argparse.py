@@ -3,7 +3,7 @@
 Most of the hackery that makes clik tick.
 
 :author: Joe Joyce <joe@decafjoe.com>
-:copyright: Copyright (c) Joe Joyce and contributors, 2009-2018.
+:copyright: Copyright (c) Joe Joyce and contributors, 2009-2019.
 :license: BSD
 """
 from __future__ import absolute_import, print_function
