@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Slightly adapted version of Werkzeug's :class:`werkzeug.local.LocalProxy`.
+Slightly adapted version of Werkzeug's ``werkzeug.local.LocalProxy``.
 
 Original code licensed from the Werkzeug Team under the following terms:
 
