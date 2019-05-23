@@ -24,7 +24,7 @@ project = u'clik'
 copyright = u'2009-2019, Joe Joyce and contributors'
 author = u'Joe Joyce and contributors'
 version = u'0.92'
-release = u'0.92.4'
+release = u'0.92.5'
 
 # Paths
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
