@@ -3,7 +3,10 @@
  Changelog
 ===========
 
-0.92.4 -- unreleased
+0.92.5 -- unreleased
+====================
+
+0.92.4 -- 2019-05-23
 ====================
 
 * The ``__doc__`` attribute of ``Command`` instances were changed to
