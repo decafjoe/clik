@@ -4,6 +4,7 @@ notifications:
   on_success: change
   on_failure: always
 
+dist: trusty
 language: python
 install: pip install tox-travis
 script: tox
